@@ -13,7 +13,7 @@ public class Message {
 	private String content; //Corresponde al contenido del mensaje
 
 	public Message(int value,  int destination, String content) {
-		this.setValue(value);
+		this.setRemitent(value);
 		this.setDestination(destination);
 		this.setContent(content);
 	}
@@ -26,11 +26,11 @@ public class Message {
 		this.destination = destination;
 	}
 
-	public int getValue() {
+	public int getRemitent() {
 		return remitent;
 	}
 
-	public void setValue(int value) {
+	public void setRemitent(int value) {
 		this.remitent = value;
 	}
 

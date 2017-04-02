@@ -9,6 +9,7 @@ import peersim.core.Node;
 import peersim.dynamics.WireKOut;
 import peersim.edsim.EDProtocol;
 import peersim.transport.Transport;
+import cl.usach.sd.Message;
 
 public class Layer implements Cloneable, EDProtocol {
 	private static final String PAR_TRANSPORT = "transport";
@@ -23,15 +24,41 @@ public class Layer implements Cloneable, EDProtocol {
 	 */
 	@Override
 	public void processEvent(Node myNode, int layerId, Object event) {
-		/**Este metodo trabajará sobre el mensaje*/
-		/* En este caso es posible que existan varios mensajes dependiendo del remitente, es decir, si es un mensaje proveniente de un nodo actuando como
-		 * tópico, de un nodo actuando como un publisher o de un nodo actuando como un subscriber, en cuyo caso es necesario
-		 * realizar un tratamiento diferente para cada tipo de nodo */	
+		
+		System.out.println("*****CAPA LAYER*****");
+		System.out.println("\tSe procesa un evento");
 		Message message = (Message) event;
-		int messageValue = ((NodePS) myNode).getIdNode();
-				
-		message.setValue(messageValue);
-		sendmessage(myNode, layerId, message);
+		System.out.println("\tSoy el nodo "+myNode.getID());
+		if(message.getDestination() == myNode.getID()){
+			System.out.println("\tHe recibido un mensaje desde el nodo "+message.getRemitent());
+			System.out.println("\tEl mensaje dice: "+message.getContent());
+			//sendmessage(myNode, layerId, message);
+			//Preparar mensaje
+			Node initNode = Network.get(message.getDestination());
+			int rand = CommonState.r.nextInt(((Linkable) initNode.getProtocol(0)).degree());
+			Node neighBor = ((Linkable) initNode.getProtocol(0)).getNeighbor(rand);
+			if(message.getDestination()%2 == 0){ 
+				System.out.println("\tPrepararé mi propio mensaje");
+				String content = "Soy el nodo "+myNode.getID()+" y le envió un mensaje a "+neighBor.getID();
+			/*
+			 * La tarde es seda
+			 * y los libros son mañana	
+			 * me miras te miro
+			 * no me importa nada
+			 * */
+				Message message2 = new Message((int) myNode.getID(),(int) neighBor.getID(),content);
+			
+				System.out.println("\tENVIARE UN MENSAJE!!!!!");
+				sendmessage(myNode,layerId,message2);
+			}
+			else{
+				System.out.println("No haré nada, porque me amurré >:c");
+			}
+		}
+		else{
+			System.out.println("\tEnviaré un mensaje a "+message.getDestination());
+			sendmessage(myNode, layerId, message);
+		} //El nodo inicial empieza a reenviar los datos, entonces hay que buscar la forma de que envíe el dato una pura vez
 		getStats();
 	}
 
@@ -40,50 +67,37 @@ public class Layer implements Cloneable, EDProtocol {
 	}
 
 	public void sendmessage(Node currentNode, int layerId, Object message) {
-		/**Con este método se enviará el mensaje de un nodo a otro
-		 * CurrentNode, es el nodo actual
-		 * message, es el mensaje que viene como objeto, por lo cual se debe trabajar sobre él
+		System.out.println("\tPreparar mensaje");
+		/**
+		 * Random degree
 		 */
-		
-		/**----EJEMPLO 1:----*/
-		/**
-		 * Para esto se debe descomentar el archivo de configuración init.0rndlink.undir false
-		 * Con la función degree, se puede conseguir la cantidad de vecinos que posee un nodo*/
-		//int randDegree = CommonState.r.nextInt(((Linkable) currentNode.getProtocol(0)).degree());
-		/**Se selecciona un nodo destino a través de este random*/
-		//Node sendNode = ((Linkable) currentNode.getProtocol(0)).getNeighbor(randDegree);
-		/**Además se pueden mostrar los vecinos que posee el nodo actual*/
-		//System.out.println("CurrentNode: " + currentNode.getID() + " | Degree: " + ((Linkable) currentNode.getProtocol(0)).degree());
-		//for (int i = 0; i < ((Linkable) currentNode.getProtocol(0)).degree(); i++) {
-		//	System.out.println("NeighborNode: "
-		//			+ ((Linkable) currentNode.getProtocol(0)).getNeighbor(i).getID());
-		//}
-		
-		/**---EJEMPLO 2: ----*/
-		
-		int randSize = CommonState.r.nextInt(Network.size());
-		Node sendNode = Network.get(randSize);
-		
-		/*Antes de enviar al siguiente nodo asignamos el valor del mensaje al nodo (por hacer algo)*/
-		int value = ((Message) message).getValue();
-		NodePS actual = (NodePS) currentNode;
-		actual.setIdNode(value);
-		//System.out.println("\tNodeID: "+(int) actual.getID()+"\tNode Type: "+ actual.getType()+"\tValue: "+ actual.getValue());
-		
+		int sendNodeId = ((Message) message).getDestination();
 		
 		/**
-		 * Envío del dato a través de la capa de transporte, la cual enviará
+		 * sendNode ID del Nodo que se debe enviar
+		 */
+		Node sendNode = Network.get(sendNodeId);
+		
+		System.out.println("\tSe enviará al nodo "+sendNode.getID());
+		
+		String content = "Hola buenas soy el nodo "+currentNode.getID();
+		System.out.println("\tCurrentNode: " + currentNode.getID() + " | Degree: " + ((Linkable) currentNode.getProtocol(0)).degree());
+		
+		for (int i = 0; i < ((Linkable) currentNode.getProtocol(0)).degree(); i++) {
+			System.out.println("\tNeighborNode: "
+					+ ((Linkable) currentNode.getProtocol(0)).getNeighbor(i).getID());
+		}
+
+		/**
+		 * Envió del dato a través de la capa de transporte, la cual enviará
 		 * según el ID del emisor y el receptor
-		 */	
+		 */
 		((Transport) currentNode.getProtocol(transportId)).send(currentNode, sendNode, message, layerId);
-		System.out.println("\tNodo "+(int) actual.getID()+" envia mensaje a nodo "+ (int) ((NodePS) sendNode).getID());
 		// Otra forma de hacerlo
 		// ((Transport)
 		// currentNode.getProtocol(FastConfig.getTransport(layerId))).send(currentNode,
 		// searchNode(sendNode), message, layerId);
-
 	}
-
 	/**
 	 * Constructor por defecto de la capa Layer del protocolo construido
 	 * 

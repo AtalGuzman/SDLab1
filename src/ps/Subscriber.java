@@ -14,6 +14,4 @@ public class Subscriber extends NodePS	{
 	public String toString() {
 		return "Subscriber [id=" + this.getIdNode() + "] Node "+ this.getIdNode()+"\n";
 	}
-	
-	
 }

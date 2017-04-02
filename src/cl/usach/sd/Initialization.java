@@ -20,6 +20,7 @@ public class Initialization implements Control {
 	int initValue;
 
 	public Initialization(String prefix) {
+		System.out.println("***************SOY TRAFFIC GENERATOR**************");
 		this.prefix = prefix;
 		/**
 		 * Para obtener valores que deseamos como argumento del archivo de
@@ -29,7 +30,10 @@ public class Initialization implements Control {
 		// Configuration.getPid retornar al número de la capa
 		// que corresponden esa parte del protocolo
 		this.idLayer = Configuration.getPid(prefix + ".protocol");
+		System.out.println("La id del protocolo app a "+idLayer);
 		this.idTransport = Configuration.getPid(prefix + ".transport");
+		System.out.println("La id del protocolo de transporte corresponde a "+idTransport);
+
 		// Configuration.getInt retorna el número del argumento
 		// que se encuentra en el archivo de configuración.
 		// También hay Configuration.getBoolean, .getString, etc...
@@ -59,13 +63,11 @@ public class Initialization implements Control {
 		 * son una clase clonable y si asignan valores desde el constructor
 		 *  todas tomaran los mismos valores, puesto que tomaran la misma dirección
 		 * de memoria*/
-		System.out.println("Inicializamos los nodos:");
+		System.out.println("Inicialización de nodos:");
 		int Networksize = Network.size();
 		for (int i = 0; i < Networksize; i++) {			
-			
+			((NodePS) Network.get(i)).setIdNode(i);
 		}
-		
-
 		return true;
 	}
 

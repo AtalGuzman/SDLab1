@@ -16,7 +16,7 @@ public class NodePS extends GeneralNode {
 	 * como un tópico.	 */
 	private int idNode; //IdNode es utilizado como un identificador del nodo
 	
-	public NodePS(String prefix) { //que significa prefix, que hace?
+	public NodePS(String prefix) { 
 		super(prefix);
 		this.setIdNode(0);
 	}

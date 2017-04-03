@@ -47,14 +47,14 @@ public class Layer implements Cloneable, EDProtocol {
 				System.out.println("No haré nada, porque me amurré >:c");
 			}*/
 			/*RECIBI UN MENSAJE*/
-			if(message.getTipoDeMensaje() == 0){ //Me debo comportar como un publicador
-				System.out.println("Debo actualizar mi post");
+			if(message.getTipoDeMensaje() == 0){ //Me lo envió un publicador
+				System.out.println("LO RECIBO COMO TOPICO");
 			}
-			else if(message.getTipoDeMensaje()==1){ //Me debo comportar como un subscriber
-				System.out.println("Me notificó un tópico al que estoy subscrito");
+			else if(message.getTipoDeMensaje()==1){ //Me lo envió un subscriber
+				System.out.println("LO RECIBO COMO TOPICO");
 			}
-			else if(message.getTipoDeMensaje() == 2){ //Me debo compotar como un topico
-				System.out.println("Recibí un nuevo post");
+			else if(message.getTipoDeMensaje() == 2){ //Me lo envi{o un topico
+				System.out.println("ME COMPORTO COMO SUB");
 			}
 			
 		}
@@ -64,7 +64,8 @@ public class Layer implements Cloneable, EDProtocol {
 			sendmessage(myNode, layerId, message);*/
 			
 			if(message.getTipoDeMensaje() == 0){ //Me debo comportar como un publicador
-				System.out.println("Voy a publicar en un tópico");
+				System.out.println("Voy a publicar en el tópico "+message.getDestination()); //En este caso el destino es algún tópico
+				
 			}
 			else if(message.getTipoDeMensaje()==1){ //Me debo comportar como un subscriber
 				System.out.println("Quiero realizar un update");

@@ -40,7 +40,8 @@ public class TrafficGenerator implements Control {
 		int initMsg = ((NodePS) initNode).getIdNode();
 		
 		System.out.println("\tSe crea el mensaje");
-		Message message = new Message(initMsg, ((int) neighBor.getID()),content);
+		//Se debe verificar que exista algún tópico con cantValue (valor del archivo de configuración)
+		Message message = new Message(initMsg, 0,content, 0); 
 		
 		System.out.println("\tSe agrega el mensaje a la cola de simulación discreta");
 		Object event = null;

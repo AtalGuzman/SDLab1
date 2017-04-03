@@ -19,7 +19,7 @@ public class Publisher extends NodePS {
 	}
 	
 	public Message publish(int idTopico){
-			Message msj = new Message((int) this.getID(), idTopico, "He publicado a un tópico");
+			Message msj = new Message((int) this.getID(), idTopico, "He publicado a un tópico",0);
 			return msj;
 	}
 	

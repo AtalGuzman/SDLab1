@@ -14,10 +14,11 @@ public class Message {
 	
 	private String content; //Corresponde al contenido del mensaje
 
-	public Message(int remitent,  int destination, String content) {
+	public Message(int remitent,  int destination, String content,int tipoDeMensaje) {
 		this.setRemitent(remitent);
 		this.setDestination(destination);
 		this.setContent(content);
+		this.setTipoDeMensaje(tipoDeMensaje);
 	}
 
 	public int getDestination() {

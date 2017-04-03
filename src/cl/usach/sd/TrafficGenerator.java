@@ -43,8 +43,8 @@ public class TrafficGenerator implements Control {
 		Message message = new Message(initMsg, ((int) neighBor.getID()),content);
 		
 		System.out.println("\tSe agrega el mensaje a la cola de simulación discreta");
-		EDSimulator.add(0, message, initNode, layerId);
-	
+		Object event = null;
+		EDSimulator.add(0, event, initNode, layerId);
 		
 		// Y se envía, para realizar la simulación
 		// Los parámetros corresponde a:

@@ -30,9 +30,8 @@ public class Layer implements Cloneable, EDProtocol {
 		Message message = (Message) event;
 		System.out.println("\tSoy el nodo "+myNode.getID());
 		if(message.getDestination() == myNode.getID()){
-			System.out.println("\tHe recibido un mensaje desde el nodo "+message.getRemitent());
+			/*System.out.println("\tHe recibido un mensaje desde el nodo "+message.getRemitent());
 			System.out.println("\tEl mensaje dice: "+message.getContent());
-			//sendmessage(myNode, layerId, message);
 			//Preparar mensaje
 			Node initNode = Network.get(message.getDestination());
 			int rand = CommonState.r.nextInt(((Linkable) initNode.getProtocol(0)).degree());
@@ -40,24 +39,40 @@ public class Layer implements Cloneable, EDProtocol {
 			if(message.getDestination()%2 == 0){ 
 				System.out.println("\tPrepararé mi propio mensaje");
 				String content = "Soy el nodo "+myNode.getID()+" y le envió un mensaje a "+neighBor.getID();
-			/*
-			 * La tarde es seda
-			 * y los libros son mañana	
-			 * me miras te miro
-			 * no me importa nada
-			 * */
 				Message message2 = new Message((int) myNode.getID(),(int) neighBor.getID(),content);
-			
 				System.out.println("\tENVIARE UN MENSAJE!!!!!");
 				sendmessage(myNode,layerId,message2);
 			}
 			else{
 				System.out.println("No haré nada, porque me amurré >:c");
+			}*/
+			/*RECIBI UN MENSAJE*/
+			if(message.getTipoDeMensaje() == 0){ //Me debo comportar como un publicador
+				System.out.println("Debo actualizar mi post");
 			}
+			else if(message.getTipoDeMensaje()==1){ //Me debo comportar como un subscriber
+				System.out.println("Me notificó un tópico al que estoy subscrito");
+			}
+			else if(message.getTipoDeMensaje() == 2){ //Me debo compotar como un topico
+				System.out.println("Recibí un nuevo post");
+			}
+			
 		}
 		else{
-			System.out.println("\tEnviaré un mensaje a "+message.getDestination());
-			sendmessage(myNode, layerId, message);
+			/*ENVIARÉ UN MENSAJE/
+			/*System.out.println("\tEnviaré un mensaje a "+message.getDestination());
+			sendmessage(myNode, layerId, message);*/
+			
+			if(message.getTipoDeMensaje() == 0){ //Me debo comportar como un publicador
+				System.out.println("Voy a publicar en un tópico");
+			}
+			else if(message.getTipoDeMensaje()==1){ //Me debo comportar como un subscriber
+				System.out.println("Quiero realizar un update");
+			}
+			else if(message.getTipoDeMensaje() == 2){ //Me debo compotar como un topico
+				System.out.println("Informaré a mis subscriptores");
+			}
+			
 		} //El nodo inicial empieza a reenviar los datos, entonces hay que buscar la forma de que envíe el dato una pura vez
 		getStats();
 	}

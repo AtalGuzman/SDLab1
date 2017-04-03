@@ -8,6 +8,7 @@ import ps.Subscriber;
 
 public class Topic extends NodePS{
 	
+	private int topic;
 	public Topic(String prefix) {
 		super(prefix);
 		// TODO Auto-generated constructor stub
@@ -19,5 +20,13 @@ public class Topic extends NodePS{
 
 	public String toString() {
 		return "Topico [id=" + this.getIdNode() + "] Node "+ this.getIdNode()+"\n";
+	}
+
+	public int getTopic() {
+		return topic;
+	}
+
+	public void setTopic(int topic) {
+		this.topic = topic;
 	}
 }

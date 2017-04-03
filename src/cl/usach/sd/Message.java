@@ -10,10 +10,12 @@ public class Message {
 							2 para un subscriptor, */
 	private int destination; //Corresponde al nodo al que se le entregará el mensaje
 	
+	private int tipoDeMensaje;
+	
 	private String content; //Corresponde al contenido del mensaje
 
-	public Message(int value,  int destination, String content) {
-		this.setRemitent(value);
+	public Message(int remitent,  int destination, String content) {
+		this.setRemitent(remitent);
 		this.setDestination(destination);
 		this.setContent(content);
 	}
@@ -40,5 +42,13 @@ public class Message {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public int getTipoDeMensaje() {
+		return tipoDeMensaje;
+	}
+
+	public void setTipoDeMensaje(int tipoDeMensaje) {
+		this.tipoDeMensaje = tipoDeMensaje;
 	}
 }

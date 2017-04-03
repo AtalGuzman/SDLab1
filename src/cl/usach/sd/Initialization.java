@@ -18,7 +18,8 @@ public class Initialization implements Control {
 	//Valores que sacaremos del archivo de configuración	
 	int argExample;
 	int initValue;
-
+	int cantTopic;
+	
 	public Initialization(String prefix) {
 		System.out.println("***************SOY TRAFFIC GENERATOR**************");
 		this.prefix = prefix;
@@ -65,8 +66,16 @@ public class Initialization implements Control {
 		 * de memoria*/
 		System.out.println("Inicialización de nodos:");
 		int Networksize = Network.size();
-		for (int i = 0; i < Networksize; i++) {			
+		for (int i = 0; i < Networksize; i++) {
 			((NodePS) Network.get(i)).setIdNode(i);
+			if(i%3 == 1 && this.cantTopic>0){ 
+				//Iniciarán como publisher algunos nodos 
+				((Publisher) ((NodePS) Network.get(i))).setRegisteredTopic(new ArrayList<Integer>(i%this.cantTopic));
+			}
+			if(i%3 == 2 && this.cantTopic>0){ //Si es igual a cero se debe partir desde abajo
+				//Iniciarán como tópicos algunos nodos 
+				((Topic) ((NodePS) Network.get(i))).setTopic(i%this.cantTopic);
+			}
 		}
 		return true;
 	}

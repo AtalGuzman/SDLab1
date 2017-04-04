@@ -20,34 +20,28 @@ public class TrafficGenerator implements Control {
 
 	@Override
 	public boolean execute() {
-		System.out.println("***************SOY TRAFFIC GENERATOR**************");
+		System.out.println("\n***************TRAFFIC GENERATOR**************\n");
 		//Consideraremos cualquier nodo de manera aleatoria de la red para comenzar y finalizar
-		System.out.println("\tSe elige un nodo para iniciar el tráfico");
+		System.out.println("- Se elige un nodo para iniciar el tráfico.");
 		Node initNode = Network.get(CommonState.r.nextInt(Network.size())); 
-		System.out.println("\tEl nodo elegido corresponde a "+initNode.getID());
+		System.out.println("- El nodo elegido corresponde a "+initNode.getID());
 		//Obtener los vecinos y se les envía el mensaje de la vida! D:
 		int cantidadVecinos = ((Linkable) initNode.getProtocol(0)).degree();
-		
+		System.out.println("- Tengo "+cantidadVecinos+" vecinos");
+		System.out.println("- Se generan los mensajes iniciales, por defecto en le tópico 0.\n");
 		for(int i = 0; i<cantidadVecinos; i++){
 			
-			System.out.println("\tSe crea el contenido");
-			String content = "Soy el nodo "+initNode.getID()+" y haré un post en el tópico 0 ";
-			
-			System.out.println("\tSe obtiene la id del nodo que iniciará el tráfico");
+			//por defecto se publica en el tópico 0, notar que se asume que existe al menos un tópico
+			String content = "Soy el nodo "+initNode.getID()+" y haré un post en el tópico 0.";		
 			int initMsg = ((NodePS) initNode).getIdNode();
-			
-			
 			Node sendNode = Network.get((int) ((Linkable) initNode.getProtocol(0)).getNeighbor(i).getID());
 			Message message = new PubMsg(initMsg, (int) sendNode.getID(),content, 0,0); 
-		
-			System.out.println("\tSe agrega el mensaje a la cola de simulación discreta");
-
 			EDSimulator.add(0, message, initNode, layerId);
 			
 		}		
 		
+		System.out.println("- Mensajes iniciales enviados.");
 		
-		System.out.println("\tSe crea el mensaje");
 		//Se debe verificar que exista algún tópico con cantValue (valor del archivo de configuración)
 		
 		// Y se envía, para realizar la simulación

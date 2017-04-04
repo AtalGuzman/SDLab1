@@ -21,7 +21,7 @@ public class Initialization implements Control {
 	int cantTopic;
 	
 	public Initialization(String prefix) {
-		System.out.println("***************SOY TRAFFIC GENERATOR**************");
+		System.out.println("\n*************** INITIALIZATION **************\n");
 		this.prefix = prefix;
 		/**
 		 * Para obtener valores que deseamos como argumento del archivo de
@@ -60,7 +60,7 @@ public class Initialization implements Control {
 			System.out.println("NO SE PUEDEN INICIALIZAR TANTOS TOPICOS");
 			return false;
 		}
-		System.out.println("\n EJECUTAMOS EL SIMULADOR");
+		System.out.println("\n\tEJECUCIÓN DEL SIMULADOR");
 		/**
 		 * Para comenzar tomaremos un nodo cualquiera de la red, a través de un random
 		 */
@@ -68,26 +68,35 @@ public class Initialization implements Control {
 		 * son una clase clonable y si asignan valores desde el constructor
 		 *  todas tomaran los mismos valores, puesto que tomaran la misma dirección
 		 * de memoria*/
-		System.out.println("Inicialización de nodos:");
+		System.out.println("\nINICIALIZACIÓN DE NODOS\n");
 		for (int i = 0; i < Networksize; i++) {
 			((NodePS) Network.get(i)).setIdNode(i);
 			((Publisher) ((NodePS) Network.get(i))).setRegisteredTopic(new ArrayList<Integer>(i%this.cantTopic));
 			((Subscriber) ((NodePS) Network.get(i))).setTopicSub(new ArrayList<Integer>((i+1)%this.cantTopic));
 		}
+		System.out.println("*******************************************************\n");
 		//Inicialización de tópicos
 		if(this.cantTopic>0){ 
 			//Iniciarán como publisher algunos nodos 
 			int rand = CommonState.r.nextInt(Networksize);
 			for(int j = 0; j < cantTopic; j++){
 				rand = CommonState.r.nextInt(Networksize);
-				System.out.println("Se pondrá el topico en el nodo "+rand);
+				System.out.println("- Se pondrá el topico " +j+" en el nodo "+rand);
 				((Topic) ((NodePS) Network.get(rand))).setTopic(j);
 			}
 		}
+		System.out.println("\n*******************************************************\n");
+
+		
 		for (int i = 0; i < Networksize; i++) {
 			NodePS temp = (NodePS) Network.get(i);
-			System.out.println("Soy el nodo "+temp.getIdNode()+" y tengo el topico "+temp.getTopic());
+			if(temp.getTopic() != -1){
+				System.out.println("- Soy el nodo "+temp.getIdNode()+" y tengo el topico "+temp.getTopic()+".");
+			} else{
+				System.out.println("- Soy el nodo "+temp.getIdNode()+" y no tengo tópicos.");
+			}
 		}
+		System.out.println("\n");
 		return true;
 	}
 

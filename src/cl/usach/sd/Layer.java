@@ -27,59 +27,39 @@ public class Layer implements Cloneable, EDProtocol {
 	@Override
 	public void processEvent(Node myNode, int layerId, Object event) {
 		
-		System.out.println("*****CAPA LAYER*****");
+		System.out.println("***** LAYER *****");
 		System.out.println("\tSe procesa un evento");
 		Message message = (Message) event;
 		System.out.println("\tSoy el nodo "+myNode.getID());
 		if(message.getDestination() == myNode.getID()){
-			/*System.out.println("\tHe recibido un mensaje desde el nodo "+message.getRemitent());
-			System.out.println("\tEl mensaje dice: "+message.getContent());
-			//Preparar mensaje
-			Node initNode = Network.get(message.getDestination());
-			int rand = CommonState.r.nextInt(((Linkable) initNode.getProtocol(0)).degree());
-			Node neighBor = ((Linkable) initNode.getProtocol(0)).getNeighbor(rand);
-			if(message.getDestination()%2 == 0){ 
-				System.out.println("\tPrepararé mi propio mensaje");
-				String content = "Soy el nodo "+myNode.getID()+" y le envió un mensaje a "+neighBor.getID();
-				Message message2 = new Message((int) myNode.getID(),(int) neighBor.getID(),content);
-				System.out.println("\tENVIARE UN MENSAJE!!!!!");
-				sendmessage(myNode,layerId,message2);
-			}
-			else{
-				System.out.println("No haré nada, porque me amurré >:c");
-			}*/
-			/*RECIBI UN MENSAJE*/
 			if(message.getTipoDeMensaje() == 0){ //Me lo envió un publicador
-				System.out.println("LO RECIBO COMO TOPICO");
+				System.out.println("\tLO RECIBO COMO TOPICO");
 				int topicId = ((NodePS) myNode).getTopic();
 				if(topicId >=0){
-					System.out.println("Sí soy un tópico");
+					System.out.println("\tSí soy un tópico");
 					if(topicId == ((PubMsg) message).getIdTopico()){
-						System.out.println("Soy el tópico que buscaban");
+						System.out.println("\tSoy el tópico que buscaban");
 					} else {
-						System.out.println("No soy el tópico que buscaban u-u");
+						System.out.println("\tNo soy el tópico que buscaban u-u");
 						}
 				} else {
-					System.out.println("No tengo ningún tópico :c");
+					System.out.println("\tNo se posee un tópico.");
 				}
 			}
 			else if(message.getTipoDeMensaje()==1){ //Me lo envió un subscriber
-				System.out.println("LO RECIBO COMO TOPICO");
+				System.out.println("\tLO RECIBO COMO TOPICO");
 			}
 			else if(message.getTipoDeMensaje() == 2){ //Me lo envi{o un topico
-				System.out.println("ME COMPORTO COMO SUB");
+				System.out.println("\tME COMPORTO COMO SUB");
 			}
 			
 		}
 		else{
-			/*ENVIARÉ UN MENSAJE/
-			/*System.out.println("\tEnviaré un mensaje a "+message.getDestination());
-			sendmessage(myNode, layerId, message);*/
-			
+			/*ENVIARÉ UN MENSAJE*/
 			if(message.getTipoDeMensaje() == 0){ //Me debo comportar como un publicador
 				 //En este caso el destino es algún tópico
 				PubMsg mensajePublicador = (PubMsg) message;
-				System.out.println("\tVoy a publicar en el tópico "+mensajePublicador.getIdTopico()+". Le enviaré el mensaje a todos mis vecinos"); //Obtengo el nodo
+				System.out.println("\tVoy a publicar en el tópico "+mensajePublicador.getIdTopico()+". Le enviaré el mensaje a "+ mensajePublicador.getDestination()); //Obtengo el nodo
 				sendmessage(myNode,layerId,message);
 			}
 			else if(message.getTipoDeMensaje()==1){ //Me debo comportar como un subscriber
@@ -111,10 +91,9 @@ public class Layer implements Cloneable, EDProtocol {
 		System.out.println("\tCurrentNode: " + currentNode.getID() + " | Tengo: " + ((Linkable) currentNode.getProtocol(0)).degree()+" vecinos");
 		
 		for (int i = 0; i < ((Linkable) currentNode.getProtocol(0)).degree(); i++) {
-			int sendNode = (int) ((Linkable) currentNode.getProtocol(0)).getNeighbor(i).getID();
 			((Transport) currentNode.getProtocol(transportId)).send(currentNode,  Network.get(sendNodeId), message, layerId);
-			System.out.println("\tSe envía un mensaje al nodo "+sendNode);
-			System.out.println("\t\tTiene el tópico "+ ((NodePS)((Linkable) currentNode.getProtocol(0)).getNeighbor(i)).getTopic());
+			//System.out.println("\tSe envía un mensaje al nodo "+sendNode);
+			//System.out.println("\t\tTiene el tópico "+ ((NodePS)((Linkable) currentNode.getProtocol(0)).getNeighbor(i)).getTopic());
 		}
 
 		/**

@@ -28,22 +28,27 @@ public class TrafficGenerator implements Control {
 		//Obtener los vecinos y se les envía el mensaje de la vida! D:
 		int cantidadVecinos = ((Linkable) initNode.getProtocol(0)).degree();
 		
-		int sendNode = CommonState.r.nextInt(cantidadVecinos);
-		Node neighBor = ((Linkable) initNode.getProtocol(0)).getNeighbor(sendNode);
+		for(int i = 0; i<cantidadVecinos; i++){
+			
+			System.out.println("\tSe crea el contenido");
+			String content = "Soy el nodo "+initNode.getID()+" y haré un post en el tópico 0 ";
+			
+			System.out.println("\tSe obtiene la id del nodo que iniciará el tráfico");
+			int initMsg = ((NodePS) initNode).getIdNode();
+			
+			
+			Node sendNode = Network.get((int) ((Linkable) initNode.getProtocol(0)).getNeighbor(i).getID());
+			Message message = new PubMsg(initMsg, (int) sendNode.getID(),content, 0,0); 
 		
-		System.out.println("\tSe crea el contenido");
-		String content = "Soy el nodo "+initNode.getID()+" y haré un post en el tópico 0 ";
+			System.out.println("\tSe agrega el mensaje a la cola de simulación discreta");
+
+			EDSimulator.add(0, message, initNode, layerId);
+			
+		}		
 		
-		System.out.println("\tSe obtiene la id del nodo que iniciará el tráfico");
-		int initMsg = ((NodePS) initNode).getIdNode();
 		
 		System.out.println("\tSe crea el mensaje");
 		//Se debe verificar que exista algún tópico con cantValue (valor del archivo de configuración)
-		Message message = new PubMsg(initMsg, sendNode,content, 0,0); 
-		
-		System.out.println("\tSe agrega el mensaje a la cola de simulación discreta");
-
-		EDSimulator.add(0, message, initNode, layerId);
 		
 		// Y se envía, para realizar la simulación
 		// Los parámetros corresponde a:

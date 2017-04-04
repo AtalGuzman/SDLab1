@@ -21,6 +21,7 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	private int idNode; //IdNode es utilizado como un identificador del nodo
 	private int idTopic;
 	private ArrayList<Integer> registeredTopic;
+	private ArrayList<Integer> subscribedTopic;
 	
 	public NodePS(String prefix) { 
 		super(prefix);
@@ -85,6 +86,18 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	@Override
 	public void setRegisteredTopic(ArrayList<Integer> registeredTopic) {
 		this.registeredTopic = registeredTopic;
+	}
+
+	@Override
+	public void setTopicSub(ArrayList<Integer> subscribedTopic) {
+		// TODO Auto-generated method stub
+		this.subscribedTopic = subscribedTopic;
+	}
+
+	@Override
+	public ArrayList<Integer> getTopicSub() {
+		// TODO Auto-generated method stub
+		return this.subscribedTopic;
 	}
 	
 	

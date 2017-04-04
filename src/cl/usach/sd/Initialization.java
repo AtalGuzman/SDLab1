@@ -54,29 +54,39 @@ public class Initialization implements Control {
 	 */
 	@Override
 	public boolean execute() {
+		int Networksize = Network.size();
+		//Preguntar como se hace esto
+		if(cantTopic > Networksize){
+			System.out.println("NO SE PUEDEN INICIALIZAR TANTOS TOPICOS");
+			return false;
+		}
 		System.out.println("\n EJECUTAMOS EL SIMULADOR");
 		/**
 		 * Para comenzar tomaremos un nodo cualquiera de la red, a través de un random
 		 */
-		//int nodoInicial = CommonState.r.nextInt(Network.size());
-		
-	
 		/**Es conveniente inicializar los nodos, puesto que los nodos 
 		 * son una clase clonable y si asignan valores desde el constructor
 		 *  todas tomaran los mismos valores, puesto que tomaran la misma dirección
 		 * de memoria*/
 		System.out.println("Inicialización de nodos:");
-		int Networksize = Network.size();
 		for (int i = 0; i < Networksize; i++) {
 			((NodePS) Network.get(i)).setIdNode(i);
-			if(i%3 == 1 && this.cantTopic>0){ 
-				//Iniciarán como publisher algunos nodos 
-				((Publisher) ((NodePS) Network.get(i))).setRegisteredTopic(new ArrayList<Integer>(i%this.cantTopic));
+			((Publisher) ((NodePS) Network.get(i))).setRegisteredTopic(new ArrayList<Integer>(i%this.cantTopic));
+			((Subscriber) ((NodePS) Network.get(i))).setTopicSub(new ArrayList<Integer>((i+1)%this.cantTopic));
+		}
+		//Inicialización de tópicos
+		if(this.cantTopic>0){ 
+			//Iniciarán como publisher algunos nodos 
+			int rand = CommonState.r.nextInt(Networksize);
+			for(int j = 0; j < cantTopic; j++){
+				rand = CommonState.r.nextInt(Networksize);
+				System.out.println("Se pondrá el topico en el nodo "+rand);
+				((Topic) ((NodePS) Network.get(rand))).setTopic(j);
 			}
-			if(i%3 == 2 && this.cantTopic>0){ //Si es igual a cero se debe partir desde abajo
-				//Iniciarán como tópicos algunos nodos 
-				((Topic) ((NodePS) Network.get(i))).setTopic(i%this.cantTopic);
-			}
+		}
+		for (int i = 0; i < Networksize; i++) {
+			NodePS temp = (NodePS) Network.get(i);
+			System.out.println("Soy el nodo "+temp.getIdNode()+" y tengo el topico "+temp.getTopic());
 		}
 		return true;
 	}

@@ -42,8 +42,10 @@ public class Initialization implements Control {
 		// en el archivo de configuración init.1statebuilder.argExample 100 y se puede usar ese valor.
 		this.argExample = Configuration.getInt(prefix + ".argExample");
 		this.initValue = Configuration.getInt(prefix + ".initValue");
+		this.cantTopic = Configuration.getInt(prefix+".cantTopic");
 		System.out.println("Arg: " + argExample);
 		System.out.println("Valor inicial: "+ initValue);
+		System.out.println("Cantidad de Topicos: "+cantTopic);
 	}
 
 	/**
@@ -57,7 +59,6 @@ public class Initialization implements Control {
 		 * Para comenzar tomaremos un nodo cualquiera de la red, a través de un random
 		 */
 		//int nodoInicial = CommonState.r.nextInt(Network.size());
-		
 		
 	
 		/**Es conveniente inicializar los nodos, puesto que los nodos 

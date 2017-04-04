@@ -28,14 +28,11 @@ public class TrafficGenerator implements Control {
 		//Obtener los vecinos y se les envía el mensaje de la vida! D:
 		int cantidadVecinos = ((Linkable) initNode.getProtocol(0)).degree();
 		
-		System.out.println("\tSe botiene el vecino del nodo "+initNode.getID());
 		int sendNode = CommonState.r.nextInt(cantidadVecinos);
 		Node neighBor = ((Linkable) initNode.getProtocol(0)).getNeighbor(sendNode);
 		
-		System.out.println("NeighborNode: "+ neighBor.getID());
-		
 		System.out.println("\tSe crea el contenido");
-		String content = "Soy el nodo "+initNode.getID()+" y tú eres mi vecino de id "+neighBor.getID();
+		String content = "Soy el nodo "+initNode.getID()+" y haré un post en el tópico 0 ";
 		
 		System.out.println("\tSe obtiene la id del nodo que iniciará el tráfico");
 		int initMsg = ((NodePS) initNode).getIdNode();

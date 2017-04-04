@@ -33,16 +33,20 @@ public class Layer implements Cloneable, EDProtocol {
 		System.out.println("\tSoy el nodo "+myNode.getID());
 		if(message.getDestination() == myNode.getID()){
 			if(message.getTipoDeMensaje() == 0){ //Me lo envió un publicador
-				System.out.println("\tLO RECIBO COMO TOPICO");
+				
+				System.out.println("\tLO RECIBO COMO TOPICO DESDE EL NODO "+message.getRemitent());
 				int topicId = ((NodePS) myNode).getTopic();
+				
 				if(topicId >=0){
 					System.out.println("\tSí soy un tópico");
 					if(topicId == ((PubMsg) message).getIdTopico()){
 						System.out.println("\tSoy el tópico que buscaban");
-					} else {
+					} 
+					else {
 						System.out.println("\tNo soy el tópico que buscaban u-u");
 						}
-				} else {
+				} 
+				else {
 					System.out.println("\tNo se posee un tópico.");
 				}
 			}
@@ -90,11 +94,10 @@ public class Layer implements Cloneable, EDProtocol {
 		
 		System.out.println("\tCurrentNode: " + currentNode.getID() + " | Tengo: " + ((Linkable) currentNode.getProtocol(0)).degree()+" vecinos");
 		
-		for (int i = 0; i < ((Linkable) currentNode.getProtocol(0)).degree(); i++) {
-			((Transport) currentNode.getProtocol(transportId)).send(currentNode,  Network.get(sendNodeId), message, layerId);
+		((Transport) currentNode.getProtocol(transportId)).send(currentNode,  Network.get(sendNodeId), message, layerId);
 			//System.out.println("\tSe envía un mensaje al nodo "+sendNode);
 			//System.out.println("\t\tTiene el tópico "+ ((NodePS)((Linkable) currentNode.getProtocol(0)).getNeighbor(i)).getTopic());
-		}
+
 
 		/**
 		 * Envió del dato a través de la capa de transporte, la cual enviará

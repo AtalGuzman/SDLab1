@@ -35,7 +35,7 @@ public class TrafficGenerator implements Control {
 			String content = "Soy el nodo "+initNode.getID()+" y haré un post en el tópico 0.";		
 			int initMsg = ((NodePS) initNode).getIdNode();
 			Node sendNode = Network.get((int) ((Linkable) initNode.getProtocol(0)).getNeighbor(i).getID());
-			Message message = new PubMsg(initMsg, (int) sendNode.getID(),content, 0,0); 
+			Message message = new PubMsg(initMsg, (int) sendNode.getID(),content, 0,0); //Notar que se crear como un mensaje de publicador
 			EDSimulator.add(0, message, initNode, layerId);
 			
 		}		

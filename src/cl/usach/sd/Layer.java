@@ -10,6 +10,7 @@ import peersim.dynamics.WireKOut;
 import peersim.edsim.EDProtocol;
 import peersim.transport.Transport;
 import cl.usach.sd.Message;
+import msg.*;
 
 public class Layer implements Cloneable, EDProtocol {
 	private static final String PAR_TRANSPORT = "transport";
@@ -64,8 +65,10 @@ public class Layer implements Cloneable, EDProtocol {
 			sendmessage(myNode, layerId, message);*/
 			
 			if(message.getTipoDeMensaje() == 0){ //Me debo comportar como un publicador
-				System.out.println("Voy a publicar en el tópico "+message.getDestination()); //En este caso el destino es algún tópico
-				
+				 //En este caso el destino es algún tópico
+				PubMsg mensajePublicador = (PubMsg) message;
+				System.out.println("Voy a publicar en el tópico "+mensajePublicador.getIdTopico()+"Le enviaré el mensaje a todos mis vecinos"); //Obtengo el nodo
+				sendmessage(myNode,layerId,message);
 			}
 			else if(message.getTipoDeMensaje()==1){ //Me debo comportar como un subscriber
 				System.out.println("Quiero realizar un update");
@@ -92,23 +95,19 @@ public class Layer implements Cloneable, EDProtocol {
 		/**
 		 * sendNode ID del Nodo que se debe enviar
 		 */
-		Node sendNode = Network.get(sendNodeId);
-		
-		System.out.println("\tSe enviará al nodo "+sendNode.getID());
 		
 		String content = "Hola buenas soy el nodo "+currentNode.getID();
-		System.out.println("\tCurrentNode: " + currentNode.getID() + " | Degree: " + ((Linkable) currentNode.getProtocol(0)).degree());
+		System.out.println("\tCurrentNode: " + currentNode.getID() + " | Tengo: " + ((Linkable) currentNode.getProtocol(0)).degree()+" vecinos");
 		
 		for (int i = 0; i < ((Linkable) currentNode.getProtocol(0)).degree(); i++) {
-			System.out.println("\tNeighborNode: "
-					+ ((Linkable) currentNode.getProtocol(0)).getNeighbor(i).getID());
+			int sendNode = (int) ((Linkable) currentNode.getProtocol(0)).getNeighbor(i).getID();
+			((Transport) currentNode.getProtocol(transportId)).send(currentNode,  Network.get(sendNodeId), message, layerId);
 		}
 
 		/**
 		 * Envió del dato a través de la capa de transporte, la cual enviará
 		 * según el ID del emisor y el receptor
 		 */
-		((Transport) currentNode.getProtocol(transportId)).send(currentNode, sendNode, message, layerId);
 		// Otra forma de hacerlo
 		// ((Transport)
 		// currentNode.getProtocol(FastConfig.getTransport(layerId))).send(currentNode,

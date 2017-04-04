@@ -7,6 +7,7 @@ import peersim.core.Linkable;
 import peersim.core.Network;
 import peersim.core.Node;
 import peersim.edsim.EDSimulator;
+import msg.PubMsg;
 
 public class TrafficGenerator implements Control {
 	private final static String PAR_PROT = "protocol";
@@ -41,11 +42,11 @@ public class TrafficGenerator implements Control {
 		
 		System.out.println("\tSe crea el mensaje");
 		//Se debe verificar que exista algún tópico con cantValue (valor del archivo de configuración)
-		Message message = new Message(initMsg, 0,content, 0); 
+		Message message = new PubMsg(initMsg, sendNode,content, 0,0); 
 		
 		System.out.println("\tSe agrega el mensaje a la cola de simulación discreta");
-		Object event = null;
-		EDSimulator.add(0, event, initNode, layerId);
+
+		EDSimulator.add(0, message, initNode, layerId);
 		
 		// Y se envía, para realizar la simulación
 		// Los parámetros corresponde a:

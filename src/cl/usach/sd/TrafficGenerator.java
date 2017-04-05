@@ -20,13 +20,17 @@ public class TrafficGenerator implements Control {
 
 	@Override
 	public boolean execute() {
-		System.out.println("\n***************TRAFFIC GENERATOR**************\n");
 		//Consideraremos cualquier nodo de manera aleatoria de la red para comenzar y finalizar
+		System.out.println("\n***************TRAFFIC GENERATOR**************\n");
 		System.out.println("- Se elige un nodo para iniciar el tráfico.");
+		
 		Node initNode = Network.get(CommonState.r.nextInt(Network.size())); 
+		
 		System.out.println("- El nodo elegido corresponde a "+initNode.getID());
+		
 		//Obtener los vecinos y se les envía el mensaje de la vida! D:
 		int cantidadVecinos = ((Linkable) initNode.getProtocol(0)).degree();
+		
 		System.out.println("- Tengo "+cantidadVecinos+" vecinos");
 		System.out.println("- Se generan los mensajes iniciales, por defecto en le tópico 0.\n");
 		

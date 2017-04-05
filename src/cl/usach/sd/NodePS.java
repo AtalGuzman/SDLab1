@@ -36,6 +36,9 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		super(prefix);
 		this.setIdNode(0);
 		this.idTopic = -1; //ALgunos cambiarán en la incialización
+		//this.setSubscriberSubscribed(new ArrayList<Integer>());
+	//	this.setPublisherRegistered(new ArrayList<Integer>());
+
 	}
 
 	public int getIdNode() {

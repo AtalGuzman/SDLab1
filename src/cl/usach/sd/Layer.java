@@ -100,39 +100,42 @@ public class Layer implements Cloneable, EDProtocol {
 								sendmessage(myNode, layerId, msj);
 							} 
 							System.out.println("\tLos mensajes han sido despachados");
-							//ITerar y enviar
 						}
 						else{
-							//registrar
-							System.out.println("\tEl nodo no está registrado en esta tópico, Está siendo registrado");
+							System.out.println("\tEl nodo no está registrado en esta tópico. Está siendo registrado...");
 							((NodePS) myNode).register(message.getRemitent());
-							
 						}
 					} 
 					else {
-						System.out.println("\tNo soy el tópico que buscaban u-u");
-							//reenviar el mismo mensaje, pero a uno de mis vecinos de modo random
+						//if(message.getTtl()>=0){
+							System.out.println("\tNo soy el tópico que buscaban u-u");
+								//reenviar el mismo mensaje, pero a uno de mis vecinos de modo random
+							NodePS original = (NodePS) Network.get(message.getRemitent());
+							int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
+							int rand = CommonState.r.nextInt(cantidadVecinos);
+							System.out.println("Reenviaré el mensaje a "+rand);
+							message.setTipoDeMensaje(0);
+							Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
+							message.setDestination( (int) sendNode.getID());
+							//message.setTtl(message.getTtl()-1);
+							((Transport) myNode.getProtocol(transportId)).send(original,sendNode, message, layerId);
+							//}
+						}
+				} 
+				else {
+					//if(message.getTtl()>=0){
+						System.out.println("\tNo se posee un tópico.");
 						NodePS original = (NodePS) Network.get(message.getRemitent());
 						int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
 						int rand = CommonState.r.nextInt(cantidadVecinos);
 						System.out.println("Reenviaré el mensaje a "+rand);
 						message.setTipoDeMensaje(0);
+						message.setIntermediario(true);
 						Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
 						message.setDestination( (int) sendNode.getID());
-						((Transport) myNode.getProtocol(transportId)).send(original,sendNode, message, layerId);
-						}
-				} 
-				else {
-					System.out.println("\tNo se posee un tópico.");
-					NodePS original = (NodePS) Network.get(message.getRemitent());
-					int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
-					int rand = CommonState.r.nextInt(cantidadVecinos);
-					System.out.println("Reenviaré el mensaje a "+rand);
-					message.setTipoDeMensaje(0);
-					message.setIntermediario(true);
-					Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
-					message.setDestination( (int) sendNode.getID());
-					((Transport) myNode.getProtocol(transportId)).send(original, sendNode, message, layerId);
+						//message.setTtl(message.getTtl()-1);
+						((Transport) myNode.getProtocol(transportId)).send(original, sendNode, message, layerId);
+					//}
 				}
 			}
 			else if(message.getTipoDeMensaje()==1){ //Me lo envió un subscriber
@@ -181,30 +184,9 @@ public class Layer implements Cloneable, EDProtocol {
 
 	public void sendmessage(Node currentNode, int layerId, Object message) {
 		System.out.println("\tPreparar mensaje");
-		/**
-		 * Random degree
-		 */
 		int sendNodeId = ((Message) message).getDestination();
-		
-		/**
-		 * sendNode ID del Nodo que se debe enviar
-		 */
-		
 		System.out.println("\tCurrentNode: " + currentNode.getID() + " | Tengo: " + ((Linkable) currentNode.getProtocol(0)).degree()+" vecinos");
-		
 		((Transport) currentNode.getProtocol(transportId)).send(currentNode,  Network.get(sendNodeId), message, layerId);
-			//System.out.println("\tSe envía un mensaje al nodo "+sendNode);
-			//System.out.println("\t\tTiene el tópico "+ ((NodePS)((Linkable) currentNode.getProtocol(0)).getNeighbor(i)).getTopic());
-
-
-		/**
-		 * Envió del dato a través de la capa de transporte, la cual enviará
-		 * según el ID del emisor y el receptor
-		 */
-		// Otra forma de hacerlo
-		// ((Transport)
-		// currentNode.getProtocol(FastConfig.getTransport(layerId))).send(currentNode,
-		// searchNode(sendNode), message, layerId);
 	}
 	/**
 	 * Constructor por defecto de la capa Layer del protocolo construido

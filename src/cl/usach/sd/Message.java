@@ -14,7 +14,7 @@ public class Message {
 	3 inicialización*/
 	
 	private String content; //Corresponde al contenido del mensaje
-
+	private int ttl = 2;
 	public Message(int remitent,  int destination, String content,int tipoDeMensaje) {
 		this.setRemitent(remitent);
 		this.setDestination(destination);
@@ -60,5 +60,13 @@ public class Message {
 
 	public void setIntermediario(Boolean intermediario) {
 		this.intermediario = intermediario;
+	}
+
+	public int getTtl() {
+		return ttl;
+	}
+
+	public void setTtl(int ttl) {
+		this.ttl = ttl;
 	}
 }

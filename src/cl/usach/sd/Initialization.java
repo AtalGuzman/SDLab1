@@ -69,35 +69,84 @@ public class Initialization implements Control {
 		 *  todas tomaran los mismos valores, puesto que tomaran la misma dirección
 		 * de memoria*/
 		System.out.println("\nINICIALIZACIÓN DE NODOS\n");
-		for (int i = 0; i < Networksize; i++) {
-			((NodePS) Network.get(i)).setIdNode(i);
-			((Publisher) ((NodePS) Network.get(i))).setRegisteredTopic(new ArrayList<Integer>(i%this.cantTopic));
-			((Subscriber) ((NodePS) Network.get(i))).setTopicSub(new ArrayList<Integer>((i+1)%this.cantTopic));
-		}
+		//Se inicializan los nodos 
+		int topicosInicializados = 0;
+		int top = CommonState.r.nextInt(Networksize);
+		int rand = CommonState.r.nextInt(Networksize);
+
 		System.out.println("*******************************************************\n");
+		for(int j=0; j < Networksize; j++){
+			((NodePS) Network.get(j)).setSubscriberSubscribed(new ArrayList<Integer>()); // Se inicializan los subscriptores subscritos al nodo actuando como topico
+		}
+		for (int i = 0; i < Networksize; i++) {
+			NodePS init = (NodePS) Network.get(i);
+			init.setRegisteredTopic(new ArrayList<Integer>(i%this.cantTopic)); //Se registra en ciertos tópicos
+			init.setSubscriberSubscribed(new ArrayList<Integer>()); // Se inicializan los subscriptores subscritos al nodo actuando como topico
+			init.setTopicSub(new ArrayList<Integer>());
+			
+			
+			//Si el topico no ha sido creado se crea, y se asigna y se registra el nodo publicador
+			if(topicosInicializados<cantTopic){
+				NodePS node = (NodePS) Network.get(top);
+				while(node.getTopic() != -1){
+					top = CommonState.r.nextInt(Networksize);
+					node = (NodePS) Network.get(top);
+				}
+				node.setTopic(topicosInicializados);
+				node.setPublisherRegistered(new ArrayList<Integer>(i)); //Se inicializan los publicadores registrados
+				topicosInicializados++;
+				node.register(i);
+				top = CommonState.r.nextInt(Networksize);
+			}
+			else{
+				for(int j=0; j < Networksize; j++){
+					if(((NodePS) Network.get(j)).getTopic() >= 0 && ((NodePS) Network.get(j)).getTopic() == i%this.cantTopic){
+						((NodePS) Network.get(j)).register( (int) init.getID() );
+					}
+				}
+			}
+			rand = CommonState.r.nextInt(100);
+			if(rand >=0){
+				init.getTopicSub().add((i+1)%this.cantTopic); //Se sbuscribe a ciertos tópicos
+				for(int j=0; j < Networksize; j++){
+					if(((NodePS) Network.get(j)).getTopic() >= 0 && ((NodePS) Network.get(j)).getTopic() == (i+1)%this.cantTopic){
+						((NodePS) Network.get(j)).getSubscriberSubscribed().add( (int) init.getID() );
+					}
+				}
+			}
+		}
 		//Inicialización de tópicos
-		if(this.cantTopic>0){ 
+		/*if(this.cantTopic>0){ 
 			//Iniciarán como publisher algunos nodos 
-			int rand = CommonState.r.nextInt(Networksize);
+			rand = CommonState.r.nextInt(Networksize);
 			for(int j = 0; j < cantTopic; j++){
 				rand = CommonState.r.nextInt(Networksize);
 				System.out.println("- Se pondrá el topico " +j+" en el nodo "+j);
-				((Topic) ((NodePS) Network.get(j))).setTopic(j);
-				(((NodePS) Network.get(j))).setSubscriberSubscribed(new ArrayList<Integer>());
-				(((NodePS) Network.get(j))).getSubscriberSubscribed().add(rand);
-				rand = CommonState.r.nextInt(Networksize);
-				(((NodePS) Network.get(j))).setPublisherRegistered(new ArrayList<Integer>(rand));
+				((Topic) ((NodePS) Network.get(j))).setTopic(j); //Se ingresa cierto tópico
+				(((NodePS) Network.get(j))).setSubscriberSubscribed(new ArrayList<Integer>()); //Se muestra qué nodos están subscritos a él
+				(((NodePS) Network.get(j))).getSubscriberSubscribed().add(rand); //Se agrega un nodo subscrito
+				rand = CommonState.r.nextInt(Networksize);	
+				(((NodePS) Network.get(j))).setPublisherRegistered(new ArrayList<Integer>(rand)); //Se muestra qué nodos están registrado en él
 			}
-		}
+		}*/
 		System.out.println("\n*******************************************************\n");
 
 		
 		for (int i = 0; i < Networksize; i++) {
 			NodePS temp = (NodePS) Network.get(i);
 			if(temp.getTopic() != -1){
-				System.out.println("- Soy el nodo "+temp.getIdNode()+" y tengo el topico "+temp.getTopic()+".");
+				System.out.println("- Soy el nodo "+temp.getID()+" y tengo el topico "+temp.getTopic()+".");
+				ArrayList<Integer> publicadores = ((NodePS) temp).getPublisherRegistered();
+				for(int pub: publicadores){
+					System.out.println("\t- Tengo registrado como publicador a "+pub);
+				}
+				ArrayList<Integer> subscriptores = ((NodePS) temp).getSubscriberSubscribed();
+				for(int sub: subscriptores){
+					System.out.println("\t- Tengo subscrito a "+sub);
+				}
 			} else{
-				System.out.println("- Soy el nodo "+temp.getIdNode()+" y no tengo tópicos.");
+				System.out.println("- Soy el nodo "+temp.getID()+" y no tengo tópicos.");
+				
 			}
 		}
 		System.out.println("\n");

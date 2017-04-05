@@ -4,13 +4,14 @@ package cl.usach.sd;
  * Clase la cual vamos a utilizar para enviar datos de un Peer a otro
  */
 public class Message {
-	private int remitent; /*Corresponde a la forma en que está actuando un nodo:
-							0, para un publicar
-							1 para un tópico
-							2 para un subscriptor, */
+	private int remitent; 
 	private int destination; //Corresponde al nodo al que se le entregará el mensaje
-	
-	private int tipoDeMensaje;
+	private Boolean intermediario;
+	private int tipoDeMensaje; /*Corresponde a la forma en que está actuando un nodo:
+	0, para un publicador
+	1 para un subscriptor
+	2 para un topico, 
+	3 inicialización*/
 	
 	private String content; //Corresponde al contenido del mensaje
 
@@ -51,5 +52,13 @@ public class Message {
 
 	public void setTipoDeMensaje(int tipoDeMensaje) {
 		this.tipoDeMensaje = tipoDeMensaje;
+	}
+
+	public Boolean getIntermediario() {
+		return intermediario;
+	}
+
+	public void setIntermediario(Boolean intermediario) {
+		this.intermediario = intermediario;
 	}
 }

@@ -81,8 +81,12 @@ public class Initialization implements Control {
 			int rand = CommonState.r.nextInt(Networksize);
 			for(int j = 0; j < cantTopic; j++){
 				rand = CommonState.r.nextInt(Networksize);
-				System.out.println("- Se pondrá el topico " +j+" en el nodo "+rand);
-				((Topic) ((NodePS) Network.get(rand))).setTopic(j);
+				System.out.println("- Se pondrá el topico " +j+" en el nodo "+j);
+				((Topic) ((NodePS) Network.get(j))).setTopic(j);
+				(((NodePS) Network.get(j))).setSubscriberSubscribed(new ArrayList<Integer>());
+				(((NodePS) Network.get(j))).getSubscriberSubscribed().add(rand);
+				rand = CommonState.r.nextInt(Networksize);
+				(((NodePS) Network.get(j))).setPublisherRegistered(new ArrayList<Integer>(rand));
 			}
 		}
 		System.out.println("\n*******************************************************\n");

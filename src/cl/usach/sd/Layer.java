@@ -35,6 +35,7 @@ public class Layer implements Cloneable, EDProtocol {
 		System.out.println("\tSe procesa un evento");
 		Message message = (Message) event;
 		System.out.println("\tSoy el nodo "+myNode.getID());
+		int siguienteAccion = CommonState.r.nextInt(3);
 		if(message.getDestination() == myNode.getID()){
 			/*if(message.getTipoDeMensaje() == 3){					
 					System.out.println("\tLO RECIBO COMO TOPICO DESDE EL NODO "+message.getRemitent());
@@ -107,35 +108,30 @@ public class Layer implements Cloneable, EDProtocol {
 						}
 					} 
 					else {
-						if(message.getTtl()>=0){
-							System.out.println("\tNo soy el tópico que buscaban u-u");
-								//reenviar el mismo mensaje, pero a uno de mis vecinos de modo random
-							NodePS original = (NodePS) Network.get(message.getRemitent());
-							int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
-							int rand = CommonState.r.nextInt(cantidadVecinos);
-							System.out.println("Reenviaré el mensaje a "+rand);
-							message.setTipoDeMensaje(0);
-							Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
-							message.setDestination( (int) sendNode.getID());
-							//message.setTtl(message.getTtl()-1);
-							((Transport) myNode.getProtocol(transportId)).send(original,sendNode, message, layerId);
-							}
-						}
-				} 
-				else {
-					if(message.getTtl()>=0){
-						System.out.println("\tNo se posee un tópico.");
+						System.out.println("\tNo soy el tópico solicitado");
+							//reenviar el mismo mensaje, pero a uno de mis vecinos de modo random
 						NodePS original = (NodePS) Network.get(message.getRemitent());
 						int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
 						int rand = CommonState.r.nextInt(cantidadVecinos);
-						System.out.println("\tReenviaré el mensaje a "+rand);
+						System.out.println("Reenviaré el mensaje a "+rand);
 						message.setTipoDeMensaje(0);
-						message.setIntermediario(true);
 						Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
 						message.setDestination( (int) sendNode.getID());
-						//message.setTtl(message.getTtl()-1);
-						((Transport) myNode.getProtocol(transportId)).send(original, sendNode, message, layerId);
+						((Transport) myNode.getProtocol(transportId)).send(original,sendNode, message, layerId);
 					}
+				} 
+				else {
+					System.out.println("\tNo se posee un tópico.");
+					NodePS original = (NodePS) Network.get(message.getRemitent());
+					int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
+					int rand = CommonState.r.nextInt(cantidadVecinos);
+					System.out.println("\tReenviaré el mensaje a "+rand);
+					message.setTipoDeMensaje(0);
+					message.setIntermediario(true);
+					Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
+					message.setDestination( (int) sendNode.getID());
+					//message.setTtl(message.getTtl()-1);
+					((Transport) myNode.getProtocol(transportId)).send(original, sendNode, message, layerId);
 				}
 			}
 			else if(message.getTipoDeMensaje()==1){ //Me lo envió un subscriber
@@ -147,6 +143,17 @@ public class Layer implements Cloneable, EDProtocol {
 					System.out.println("\tTengo tópicos subscritos");
 					if(  ((NodePS) myNode).getTopicSub().contains( ((TopicMsg) message).getIdTopic() )) ;
 						System.out.println("\tHe recibido la siguiente notificación desde el tópico: "+ ((TopicMsg) message).getIdTopic()+"\n\t\t"+((TopicMsg) message).getContent());
+						//Se debe ver qué realizar, comportarse como alg
+						siguienteAccion = CommonState.r.nextInt(3);
+						if(siguienteAccion == 0){
+							System.out.println("\tAhora actuaré como un publicador");
+						}
+						else if(siguienteAccion == 1){
+							System.out.println("\tAhora actuaré como un subscriptor");
+						}
+						else{
+							System.out.println("\tAhora actuaré como un Topico ?? qué podré hacer pompom");
+						}
 				} else{
 					System.out.println("\t*No estoy subscrito a ningún tópico*");
 				}

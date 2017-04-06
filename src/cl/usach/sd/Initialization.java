@@ -78,6 +78,7 @@ public class Initialization implements Control {
 		for(int j=0; j < Networksize; j++){
 			((NodePS) Network.get(j)).setSubscriberSubscribed(new ArrayList<Integer>()); // Se inicializan los subscriptores subscritos al nodo actuando como topico
 		}
+		
 		for (int i = 0; i < Networksize; i++) {
 			NodePS init = (NodePS) Network.get(i);
 			init.setRegisteredTopic(new ArrayList<Integer>(i%this.cantTopic)); //Se registra en ciertos tópicos
@@ -97,38 +98,49 @@ public class Initialization implements Control {
 				topicosInicializados++;
 				node.register(i);
 				top = CommonState.r.nextInt(Networksize);
+				node.getSubscriberSubscribed().add(rand);
+
 			}
 			else{
 				for(int j=0; j < Networksize; j++){
 					if(((NodePS) Network.get(j)).getTopic() >= 0 && ((NodePS) Network.get(j)).getTopic() == i%this.cantTopic){
 						((NodePS) Network.get(j)).register( (int) init.getID() );
 					}
-				}
-			}
-			rand = CommonState.r.nextInt(100);
-			if(rand >=0){
-				init.getTopicSub().add((i+1)%this.cantTopic); //Se sbuscribe a ciertos tópicos
-				for(int j=0; j < Networksize; j++){
-					if(((NodePS) Network.get(j)).getTopic() >= 0 && ((NodePS) Network.get(j)).getTopic() == (i+1)%this.cantTopic){
-						((NodePS) Network.get(j)).getSubscriberSubscribed().add( (int) init.getID() );
+					if(((NodePS) Network.get(j)).getTopic() >= 0){
+						while(((NodePS) Network.get(j)).getSubscriberSubscribed().contains(rand)){
+							rand = CommonState.r.nextInt(Networksize);
+						}
+						((NodePS) Network.get(j)).getSubscriberSubscribed().add(rand);
 					}
 				}
 			}
-		}
-		//Inicialización de tópicos
-		/*if(this.cantTopic>0){ 
-			//Iniciarán como publisher algunos nodos 
 			rand = CommonState.r.nextInt(Networksize);
-			for(int j = 0; j < cantTopic; j++){
-				rand = CommonState.r.nextInt(Networksize);
-				System.out.println("- Se pondrá el topico " +j+" en el nodo "+j);
-				((Topic) ((NodePS) Network.get(j))).setTopic(j); //Se ingresa cierto tópico
-				(((NodePS) Network.get(j))).setSubscriberSubscribed(new ArrayList<Integer>()); //Se muestra qué nodos están subscritos a él
-				(((NodePS) Network.get(j))).getSubscriberSubscribed().add(rand); //Se agrega un nodo subscrito
-				rand = CommonState.r.nextInt(Networksize);	
-				(((NodePS) Network.get(j))).setPublisherRegistered(new ArrayList<Integer>(rand)); //Se muestra qué nodos están registrado en él
+		}
+		
+		for(int i = 0; i < Networksize; i++){
+			NodePS temp = (NodePS) Network.get(i);
+			ArrayList<Integer> Sub = temp.getSubscriberSubscribed();
+			if(Sub.size() > 0){
+				for(int sub: Sub){
+						NodePS subcriptor = (NodePS)Network.get(sub);
+						subcriptor.getTopicSub().add(i);
+				}
+				
+				//Este pequeño algoritmo fue obtenido desde http://stackoverflow.com/questions/17967114/how-to-efficiently-remove-duplicates-from-an-array-without-using-set
+				int current = Sub.get(0);
+				boolean found = false;
+			
+			}
+		}
+	    
+		//Todos los topicos están inicializados
+		//Falta agregar las subscripciones D:
+		/*for(int j=0; j < Networksize; j++){
+			if(((NodePS) Network.get(j)).getTopic() == (i+1)%this.cantTopic){
+				((NodePS) Network.get(j)).getSubscriberSubscribed().add( (int) Network.get(rand).getID() );
 			}
 		}*/
+		
 		System.out.println("\n*******************************************************\n");
 
 		

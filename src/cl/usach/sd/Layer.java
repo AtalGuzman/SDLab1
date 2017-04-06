@@ -102,12 +102,12 @@ public class Layer implements Cloneable, EDProtocol {
 							System.out.println("\tLos mensajes han sido despachados");
 						}
 						else{
-							System.out.println("\tEl nodo no está registrado en esta tópico. Está siendo registrado...");
+							System.out.println("\tEl nodo no está registrado en esta tópico. Por favor, enviar solicitud ");
 							((NodePS) myNode).register(message.getRemitent());
 						}
 					} 
 					else {
-						//if(message.getTtl()>=0){
+						if(message.getTtl()>=0){
 							System.out.println("\tNo soy el tópico que buscaban u-u");
 								//reenviar el mismo mensaje, pero a uno de mis vecinos de modo random
 							NodePS original = (NodePS) Network.get(message.getRemitent());
@@ -119,11 +119,11 @@ public class Layer implements Cloneable, EDProtocol {
 							message.setDestination( (int) sendNode.getID());
 							//message.setTtl(message.getTtl()-1);
 							((Transport) myNode.getProtocol(transportId)).send(original,sendNode, message, layerId);
-							//}
+							}
 						}
 				} 
 				else {
-					//if(message.getTtl()>=0){
+					if(message.getTtl()>=0){
 						System.out.println("\tNo se posee un tópico.");
 						NodePS original = (NodePS) Network.get(message.getRemitent());
 						int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
@@ -135,7 +135,7 @@ public class Layer implements Cloneable, EDProtocol {
 						message.setDestination( (int) sendNode.getID());
 						//message.setTtl(message.getTtl()-1);
 						((Transport) myNode.getProtocol(transportId)).send(original, sendNode, message, layerId);
-					//}
+					}
 				}
 			}
 			else if(message.getTipoDeMensaje()==1){ //Me lo envió un subscriber
@@ -183,9 +183,9 @@ public class Layer implements Cloneable, EDProtocol {
 	}
 
 	public void sendmessage(Node currentNode, int layerId, Object message) {
-		System.out.println("\tPreparar mensaje");
+		//System.out.println("\tPreparar mensaje");
 		int sendNodeId = ((Message) message).getDestination();
-		System.out.println("\tCurrentNode: " + currentNode.getID() + " | Tengo: " + ((Linkable) currentNode.getProtocol(0)).degree()+" vecinos");
+	//	System.out.println("\tCurrentNode: " + currentNode.getID() + " | Tengo: " + ((Linkable) currentNode.getProtocol(0)).degree()+" vecinos");
 		((Transport) currentNode.getProtocol(transportId)).send(currentNode,  Network.get(sendNodeId), message, layerId);
 	}
 	/**

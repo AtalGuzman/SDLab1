@@ -81,7 +81,7 @@ public class Initialization implements Control {
 		
 		for (int i = 0; i < Networksize; i++) {
 			NodePS init = (NodePS) Network.get(i);
-			init.setRegisteredTopic(new ArrayList<Integer>(i%this.cantTopic)); //Se registra en ciertos tópicos
+			init.registerPublisher( (int) init.getID(),i%this.cantTopic); //Se registra en ciertos tópicos
 			init.setSubscriberSubscribed(new ArrayList<Integer>()); // Se inicializan los subscriptores subscritos al nodo actuando como topico
 			init.setTopicSub(new ArrayList<Integer>());
 			

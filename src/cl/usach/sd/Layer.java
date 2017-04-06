@@ -147,6 +147,10 @@ public class Layer implements Cloneable, EDProtocol {
 						siguienteAccion = CommonState.r.nextInt(3);
 						if(siguienteAccion == 0){
 							System.out.println("\tAhora actuaré como un publicador");
+							//Puedo registrarme a una tópico
+							
+							//Desregistrarme a un tópico
+							
 						}
 						else if(siguienteAccion == 1){
 							System.out.println("\tAhora actuaré como un subscriptor");

@@ -95,7 +95,7 @@ public class Layer implements Cloneable, EDProtocol {
 						if(((NodePS) myNode).registrado(idRemitent)){
 							//Send message
 							System.out.println("\tEnviaré un mensaje a todos los  subscriptores");
-							ArrayList<Message> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID());
+							ArrayList<TopicMsg> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID(), topicId);
 							for(Message msj: notificaciones){
 								sendmessage(myNode, layerId, msj);
 							} 
@@ -128,7 +128,7 @@ public class Layer implements Cloneable, EDProtocol {
 						NodePS original = (NodePS) Network.get(message.getRemitent());
 						int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
 						int rand = CommonState.r.nextInt(cantidadVecinos);
-						System.out.println("Reenviaré el mensaje a "+rand);
+						System.out.println("\tReenviaré el mensaje a "+rand);
 						message.setTipoDeMensaje(0);
 						message.setIntermediario(true);
 						Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
@@ -142,14 +142,20 @@ public class Layer implements Cloneable, EDProtocol {
 				System.out.println("\tLO RECIBO COMO TOPICO");
 			}
 			else if(message.getTipoDeMensaje() == 2){ //Me lo envi{o un topico
-				System.out.println("\tME COMPORTO COMO SUB");
-				System.out.println("\tHe recibido el siguiente mensaje: \n\t\t"+message.getContent());
+				System.out.println("\tME COMPORTO COMO SUB"); 
+				if( ((NodePS) myNode).getTopicSub().size() != 0 ){
+					System.out.println("\tTengo tópicos subscritos");
+					if(  ((NodePS) myNode).getTopicSub().contains( ((TopicMsg) message).getIdTopic() )) ;
+						System.out.println("\tHe recibido la siguiente notificación desde el tópico: "+ ((TopicMsg) message).getIdTopic()+"\n\t\t"+((TopicMsg) message).getContent());
+				} else{
+					System.out.println("\t*No estoy subscrito a ningún tópico*");
+				}
 			}
 			
 		}
 		else{
 			/*ENVIARÉ UN MENSAJE*/
-			if(message.getTipoDeMensaje() == 3){ //MePrimer mensaje
+			if(message.getTipoDeMensaje() == 3){ //Primer mensaje
 				 //En este caso el destino es algún tópico
 				PubMsg mensajePublicador = (PubMsg) message;
 				System.out.println("\tVoy a publicar en el tópico "+mensajePublicador.getIdTopico()+". Le enviaré el mensaje a "+ mensajePublicador.getDestination()); //Obtengo el nodo

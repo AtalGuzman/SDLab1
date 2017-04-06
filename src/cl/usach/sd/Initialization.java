@@ -98,10 +98,10 @@ public class Initialization implements Control {
 				topicosInicializados++;
 				node.register(i);
 				top = CommonState.r.nextInt(Networksize);
-				while(node.getSubscriberSubscribed().contains(rand)){
+				/*while(node.getSubscriberSubscribed().contains(rand)){
 					rand = CommonState.r.nextInt(Networksize);
 				}
-				node.getSubscriberSubscribed().add(rand);
+				node.getSubscriberSubscribed().add(rand);*/
 
 			}
 			else{
@@ -110,10 +110,10 @@ public class Initialization implements Control {
 						((NodePS) Network.get(j)).register( (int) init.getID() );
 					}
 					if(((NodePS) Network.get(j)).getTopic() >= 0){
-						while(((NodePS) Network.get(j)).getSubscriberSubscribed().contains(rand)){
+						/*while(((NodePS) Network.get(j)).getSubscriberSubscribed().contains(rand)){
 							rand = CommonState.r.nextInt(Networksize);
 						}
-						((NodePS) Network.get(j)).getSubscriberSubscribed().add(rand);
+						((NodePS) Network.get(j)).getSubscriberSubscribed().add(rand);*/
 					}
 				}
 			}
@@ -122,16 +122,16 @@ public class Initialization implements Control {
 		
 		for(int i = 0; i < Networksize; i++){
 			NodePS temp = (NodePS) Network.get(i);
-			ArrayList<Integer> Sub = temp.getSubscriberSubscribed();
-			if(Sub.size() > 0){
+			if(temp.getTopic()>=0){
+				System.out.println("Se procece a agregar subscriptores");
+				ArrayList<Integer> Sub = temp.getSubscriberSubscribed();
+				Sub.add(rand); 
+
 				for(int sub: Sub){
-						NodePS subcriptor = (NodePS)Network.get(sub);
-						subcriptor.getTopicSub().add(i);
+					NodePS subcriptor = (NodePS)Network.get(sub);
+					subcriptor.getTopicSub().add(temp.getTopic());
 				}
-				//Este pequeño algoritmo fue obtenido desde http://stackoverflow.com/questions/17967114/how-to-efficiently-remove-duplicates-from-an-array-without-using-set
-				int current = Sub.get(0);
-				boolean found = false;
-			
+				rand = CommonState.r.nextInt(Networksize);
 			}
 		}
 	    
@@ -158,9 +158,14 @@ public class Initialization implements Control {
 				for(int sub: subscriptores){
 					System.out.println("\t- Tengo subscrito a "+sub);
 				}
+				for(int topic: temp.getTopicSub()){
+					System.out.println("\t- Estoy subscrito en el topico "+ topic);
+				}
 			} else{
 				System.out.println("- Soy el nodo "+temp.getID()+" y no tengo tópicos.");
-				
+				for(int topic: temp.getTopicSub()){
+					System.out.println("\t- Estoy subscrito en el topico "+ topic);
+				}
 			}
 		}
 		System.out.println("\n");

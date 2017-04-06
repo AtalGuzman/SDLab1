@@ -2,6 +2,7 @@ package ps;
 
 import cl.usach.sd.Message;
 import cl.usach.sd.NodePS;
+import msg.TopicMsg;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,7 @@ public interface Topic{
 
 	public Boolean registrado(int idNode);
 	
-	public ArrayList<Message> Publish(ArrayList<Integer> idSubscriber, int remitent);
+	public ArrayList<TopicMsg> Publish(ArrayList<Integer> idSubscriber, int remitent, int idTopico);
 	
 	public void register(int idPublisher);
 }

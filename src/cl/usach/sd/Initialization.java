@@ -98,6 +98,9 @@ public class Initialization implements Control {
 				topicosInicializados++;
 				node.register(i);
 				top = CommonState.r.nextInt(Networksize);
+				while(node.getSubscriberSubscribed().contains(rand)){
+					rand = CommonState.r.nextInt(Networksize);
+				}
 				node.getSubscriberSubscribed().add(rand);
 
 			}
@@ -125,7 +128,6 @@ public class Initialization implements Control {
 						NodePS subcriptor = (NodePS)Network.get(sub);
 						subcriptor.getTopicSub().add(i);
 				}
-				
 				//Este pequeño algoritmo fue obtenido desde http://stackoverflow.com/questions/17967114/how-to-efficiently-remove-duplicates-from-an-array-without-using-set
 				int current = Sub.get(0);
 				boolean found = false;

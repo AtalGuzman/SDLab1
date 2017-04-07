@@ -13,6 +13,7 @@ public class Message {
 	2 para un topico, 
 	3 inicialización*/
 	
+	private int accion; /*0 para agregar, 1 para eliminar 2 para publicar*/
 	private String content; //Corresponde al contenido del mensaje
 	private int ttl = 2;
 	public Message(int remitent,  int destination, String content,int tipoDeMensaje) {
@@ -68,5 +69,13 @@ public class Message {
 
 	public void setTtl(int ttl) {
 		this.ttl = ttl;
+	}
+
+	public int getAccion() {
+		return accion;
+	}
+
+	public void setAccion(int accion) {
+		this.accion = accion;
 	}
 }

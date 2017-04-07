@@ -26,6 +26,8 @@ public class TrafficGenerator implements Control {
 		
 		Node initNode = Network.get(CommonState.r.nextInt(Network.size())); 
 		
+		while(((NodePS)initNode).getTopic() <0 ) initNode = Network.get(CommonState.r.nextInt(Network.size())); 
+		
 		System.out.println("- El nodo elegido corresponde a "+initNode.getID());
 		
 		//Obtener los vecinos y se les envía el mensaje de la vida! D:

@@ -30,45 +30,89 @@ public class Layer implements Cloneable, EDProtocol {
 	 */
 	@Override
 	public void processEvent(Node myNode, int layerId, Object event) {
-		
-		System.out.println("***** LAYER *****");
-		System.out.println("\tSe procesa un evento");
+		//System.out.println("***** LAYER *****");
+		//System.out.println("\tSe procesa un evento");
 		Message message = (Message) event;
-		System.out.println("\tSoy el nodo "+myNode.getID());
+		System.out.println("\tMensajes pasando por el nodo "+myNode.getID());
+		int cantidadDeVecinos;
 		int siguienteAccion = CommonState.r.nextInt(3);
+		int cantTopic = 5;
+		int rand;
 		if(message.getDestination() == myNode.getID()){
 			if(message.getTipoDeMensaje() == 0 || message.getTipoDeMensaje() == 3){ //Me lo envió un publicador
-				System.out.println("\tLO RECIBO COMO TOPICO DESDE EL NODO "+message.getRemitent());
+				//System.out.println("\tLO RECIBO COMO TOPICO DESDE EL NODO "+message.getRemitent());
 				int topicId = ((NodePS) myNode).getTopic();
 				int idRemitent = message.getRemitent();
 				if(topicId >=0){
-					System.out.println("\tSí tengo un tópico");
+					//System.out.println("\tSí tengo un tópico");
 					if(topicId == ((PubMsg) message).getIdTopico()){
-						System.out.println("\tSoy el tópico que buscaban");
+						//System.out.println("\tSoy el tópico que buscaban");
 						//Message answer = new TopicMsg((int) myNode.getID(), , String content, int tipoDeMensaje);
 						//Revisar si el nodo que me lo mandó está registrado
-						((NodePS)Network.get(idRemitent)).getRegisteredTopic();
-						if(((NodePS) myNode).registrado(idRemitent)){
-							//Send message
-							System.out.println("\tEnviaré un mensaje a todos los  subscriptores");
-							ArrayList<TopicMsg> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID(), topicId);
-							for(Message msj: notificaciones){
-								sendmessage(myNode, layerId, msj);
-							} 
-							System.out.println("\tLos mensajes han sido despachados");
+						if(message.getAccion() == 0){
+							System.out.println("\tRegistraré al nodo "+message.getRemitent());
+							((NodePS) myNode).getPublisherRegistered().add(message.getRemitent());
+							
+							
+							for (int i = 0; i < Network.size(); i++) {
+								NodePS temp = (NodePS) Network.get(i);
+								if(temp.getTopic() != -1){
+									System.out.println("- Soy el nodo "+temp.getID()+" y tengo el topico "+temp.getTopic()+".");
+									ArrayList<Integer> publicadores = ((NodePS) temp).getPublisherRegistered();
+									ArrayList<Integer> publicoEn = ((NodePS) temp).getRegisteredTopic();
+									for(int pub: publicadores){
+										System.out.println("\t- Tengo registrado como publicador a "+pub);
+									}
+									ArrayList<Integer> subscriptores = ((NodePS) temp).getSubscriberSubscribed();
+									for(int sub: subscriptores){
+										System.out.println("\t- Tengo subscrito a "+sub);
+									}
+									for(int topic: temp.getTopicSub()){
+										System.out.println("\t- Estoy subscrito en el topico "+ topic);
+									}
+									for(int pub: publicoEn){
+										System.out.println("\t- Puedo publicar en "+pub);
+									}
+								} else{	
+									System.out.println("- Soy el nodo "+temp.getID()+" y no tengo tópicos.");
+									ArrayList<Integer> publicoEn = ((NodePS) temp).getRegisteredTopic();
+									for(int topic: temp.getTopicSub()){
+										System.out.println("\t- Estoy subscrito en el topico "+ topic);
+									}
+									for(int pub: publicoEn){
+										System.out.println("\t- Puedo publicar en "+pub);
+									}
+								}
+							}
+							
 						}
-						else{
-							System.out.println("\tEl nodo no está registrado en esta tópico. Por favor, enviar solicitud ");
-							((NodePS) myNode).register(message.getRemitent());
+						else if(message.getAccion() == 1){
+							
+						}
+						else if(message.getAccion() == 2){
+							((NodePS)Network.get(idRemitent)).getRegisteredTopic();
+							if(((NodePS) myNode).registrado(idRemitent)){
+								//Send message
+								//System.out.println("\tEnviaré un mensaje a todos los  subscriptores");
+								ArrayList<TopicMsg> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID(), topicId);
+								for(Message msj: notificaciones){
+									sendmessage(myNode, layerId, msj);
+								} 
+								//System.out.println("\tLos mensajes han sido despachados");
+							}
+							else{
+								//System.out.println("\tEl nodo no está registrado en esta tópico. Por favor, enviar solicitud ");
+								((NodePS) myNode).register(message.getRemitent());
+							}
 						}
 					} 
 					else {
-						System.out.println("\tNo soy el tópico solicitado");
+						//System.out.println("\tNo soy el tópico solicitado");
 							//reenviar el mismo mensaje, pero a uno de mis vecinos de modo random
 						NodePS original = (NodePS) Network.get(message.getRemitent());
 						int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
-						int rand = CommonState.r.nextInt(cantidadVecinos);
-						System.out.println("Reenviaré el mensaje a "+rand);
+						rand = CommonState.r.nextInt(cantidadVecinos);
+						//System.out.println("Reenviaré el mensaje a "+rand);
 						message.setTipoDeMensaje(0);
 						Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
 						message.setDestination( (int) sendNode.getID());
@@ -76,11 +120,11 @@ public class Layer implements Cloneable, EDProtocol {
 					}
 				} 
 				else {
-					System.out.println("\tNo se posee un tópico.");
+					//System.out.println("\tNo se posee un tópico.");
 					NodePS original = (NodePS) Network.get(message.getRemitent());
-					int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
-					int rand = CommonState.r.nextInt(cantidadVecinos);
-					System.out.println("\tReenviaré el mensaje a "+rand);
+					cantidadDeVecinos = ((Linkable) myNode.getProtocol(0)).degree();
+					rand = CommonState.r.nextInt(cantidadDeVecinos);
+					//System.out.println("\tReenviaré el mensaje a "+rand);
 					message.setTipoDeMensaje(0);
 					message.setIntermediario(true);
 					Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
@@ -93,28 +137,54 @@ public class Layer implements Cloneable, EDProtocol {
 				System.out.println("\tLO RECIBO COMO TOPICO");
 			}
 			else if(message.getTipoDeMensaje() == 2){ //Me lo envi{o un topico
-				System.out.println("\tME COMPORTO COMO SUB"); 
 				if( ((NodePS) myNode).getTopicSub().size() != 0 ){
-					System.out.println("\tTengo tópicos subscritos");
-					if(  ((NodePS) myNode).getTopicSub().contains( ((TopicMsg) message).getIdTopic() )) ;
+				
+					if(  ((NodePS) myNode).getTopicSub().contains( ((TopicMsg) message).getIdTopic() )) {
+						System.out.println("\n****************\n");
+						System.out.println("\tSoy el nodo "+myNode.getID());
 						System.out.println("\tHe recibido la siguiente notificación desde el tópico: "+ ((TopicMsg) message).getIdTopic()+"\n\t\t"+((TopicMsg) message).getContent());
-						//Se debe ver qué realizar, comportarse como alg
-						siguienteAccion = CommonState.r.nextInt(3);
-						if(siguienteAccion == 0){
-							System.out.println("\tAhora actuaré como un publicador");
-							//Puedo registrarme a una tópico
-							
-							//Desregistrarme a un tópico
-							
 						}
-						else if(siguienteAccion == 1){
+						//Se debe ver qué realizar, comportarse como alg
+						siguienteAccion = CommonState.r.nextInt(100);
+						//System.out.println(siguienteAccion);
+						if(siguienteAccion < 60){
+							System.out.println("\tActuaré como publicador");
+							//Puedo registrarme a una tópico
+							cantidadDeVecinos = ((Linkable) myNode.getProtocol(0)).degree();
+							rand =  CommonState.r.nextInt(cantidadDeVecinos);
+							Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
+							int myCantTopic = ((NodePS)myNode).getRegisteredTopic().size();
+							
+							if(myCantTopic > 0){
+								System.out.println("\tMe registraré a un tópico");
+								int indexTopic = CommonState.r.nextInt(myCantTopic);
+								System.out.println(myCantTopic);
+								int chooseTopic = ((NodePS)myNode).getRegisteredTopic().get(indexTopic);
+								String content = "He realizado una publicación en el tópico "+chooseTopic;
+								Message msg = ((NodePS) myNode).publish((int)myNode.getID(),chooseTopic, (int)((NodePS)sendNode).getID(), content, 0);
+								sendmessage(myNode, layerId,msg);
+								//Desregistrarme a un tópico
+							}
+							else{
+								System.out.println("\tMe registraré a un tópico");
+								int topic = 2;
+								((NodePS) myNode).getRegisteredTopic().add(topic);
+								Message msg = new PubMsg((int) myNode.getID(),(int)sendNode.getID(),"Me quiero registrar al tópico"+topic,0, topic);
+								msg.setAccion(0);
+								System.out.println("Mensaje : \n la acción es "+msg.getAccion());
+								System.out.println("Mensaje : \n el remitente es "+msg.getRemitent());
+								System.out.println("Mensaje : \n el destinatario es "+msg.getDestination());
+								sendmessage(myNode,layerId,msg);
+								///Registradísimo
+							}
+						}
+						else if(siguienteAccion >=60){
 							System.out.println("\tAhora actuaré como un subscriptor");
 						}
-						else{
-							System.out.println("\tAhora actuaré como un Topico ?? qué podré hacer pompom");
-						}
+					System.out.println("\n****************\n");
 				} else{
-					System.out.println("\t*No estoy subscrito a ningún tópico*");
+					//System.out.println("\t*No estoy subscrito a ningún tópico*");+
+					//No se ha subscrito a ningún tópico
 				}
 			}
 			
@@ -124,18 +194,19 @@ public class Layer implements Cloneable, EDProtocol {
 			if(message.getTipoDeMensaje() == 3){ //Primer mensaje
 				 //En este caso el destino es algún tópico
 				PubMsg mensajePublicador = (PubMsg) message;
+				//if(myNode.getID() == message.getRemitent()) 
 				System.out.println("\tVoy a publicar en el tópico "+mensajePublicador.getIdTopico()+". Le enviaré el mensaje a "+ mensajePublicador.getDestination()); //Obtengo el nodo
 				sendmessage(myNode,layerId,message);
 			}
 			else if(message.getTipoDeMensaje() == 0){
 				//me debo comportar como un publicador supongo ...
 				if(message.getIntermediario()){
-					System.out.println("\tEstoy enviando como intermediario este mensaje al nodo "+message.getDestination());
+					//System.out.println("\tEstoy enviando como intermediario este mensaje al nodo "+message.getDestination());
 					sendmessage(myNode,layerId,message);
 				} 
 				else{
 					PubMsg mensajePublicador = (PubMsg) message;
-					System.out.println("\tVoy a publicar en el tópico "+mensajePublicador.getIdTopico()+". Le enviaré el mensaje a "+ mensajePublicador.getDestination()); //Obtengo el nodo
+					//System.out.println("\tVoy a publicar en el tópico "+mensajePublicador.getIdTopico()+". Le enviaré el mensaje a "+ mensajePublicador.getDestination()); //Obtengo el nodo
 					sendmessage(myNode,layerId,message);
 				}
 			}
@@ -157,7 +228,7 @@ public class Layer implements Cloneable, EDProtocol {
 	public void sendmessage(Node currentNode, int layerId, Object message) {
 		//System.out.println("\tPreparar mensaje");
 		int sendNodeId = ((Message) message).getDestination();
-	//	System.out.println("\tCurrentNode: " + currentNode.getID() + " | Tengo: " + ((Linkable) currentNode.getProtocol(0)).degree()+" vecinos");
+		//System.out.println("\tCurrentNode: " + currentNode.getID() + " | Tengo: " + ((Linkable) currentNode.getProtocol(0)).degree()+" vecinos");
 		((Transport) currentNode.getProtocol(transportId)).send(currentNode,  Network.get(sendNodeId), message, layerId);
 	}
 	/**

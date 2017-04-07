@@ -67,7 +67,7 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 
 	@Override
 	public void registerPublisher(int idNode, int topic) {
-		this.setRegisteredTopic(new ArrayList<Integer>(topic));
+		this.getRegisteredTopic().add(topic);
 	}
 
 	@Override
@@ -150,10 +150,11 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		int cantidadVecinos = ((Linkable) this.getProtocol(0)).degree();
 		for(int i = 0; i<cantidadVecinos; i++){
 			String content = "Soy el nodo "+this.getID()+" y haré un post en el tópico 0.";		
-			int initMsg = ((NodePS) this).getIdNode();
+			int initMsg = (int) ((NodePS) this).getID();
 			Node sendNode = Network.get((int) ((Linkable) this.getProtocol(0)).getNeighbor(i).getID());			
 			Message message = publish(initMsg, idTopic, (int) sendNode.getID(), content, 3); //El tipo 3 es especial, es el primer mensaje
 			message.setIntermediario(false);
+			message.setAccion(2);
 			EDSimulator.add(0, message, this, layerId);
 		}
 	}

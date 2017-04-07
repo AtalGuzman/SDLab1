@@ -8,9 +8,9 @@ public interface Publisher{
 	
 	public PubMsg publish(int idEnviar, int idTopico, int destinatario, String content, int type);
 	
-	public void deletePublication(String topic);
+	public void deletePublication(int idEnviar, int idTopico, int destinatario, int type);
 	
-	public void deregisterPublisher(String topic);
+	public void deregisterPublisher(int topic);
 
 	public String toString();
 

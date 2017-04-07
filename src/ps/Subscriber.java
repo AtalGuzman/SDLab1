@@ -11,4 +11,6 @@ public interface Subscriber{
 	public void setTopicSub(ArrayList<Integer> subscribedTopic);
 	
 	public ArrayList<Integer> getTopicSub();
+	
+	public void registerSub(int idTopic);
 }

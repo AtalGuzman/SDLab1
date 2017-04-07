@@ -37,52 +37,7 @@ public class Layer implements Cloneable, EDProtocol {
 		System.out.println("\tSoy el nodo "+myNode.getID());
 		int siguienteAccion = CommonState.r.nextInt(3);
 		if(message.getDestination() == myNode.getID()){
-			/*if(message.getTipoDeMensaje() == 3){					
-					System.out.println("\tLO RECIBO COMO TOPICO DESDE EL NODO "+message.getRemitent());
-					int topicId = ((NodePS) myNode).getTopic();
-					
-					if(topicId >=0){
-						System.out.println("\tSí soy un tópico");
-						if(topicId == ((PubMsg) message).getIdTopico()){
-							System.out.println("\tSoy el tópico que buscaban");
-							//Message answer = new TopicMsg((int) myNode.getID(), , String content, int tipoDeMensaje);
-							//Revisar si el nodo que me lo mandó está registrado
-							if(((NodePS) myNode).registrado(message.getRemitent())){
-								//Send message
-								System.out.println("Enviaré un mensaje a todos los  subscriptores");
-								((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID());
-							}
-							else{
-								//registrar
-								((NodePS) myNode).register(message.getRemitent());
-								System.out.println("El nodo no está registrado en esta tópico, debe ser registrado");
-							}
-						} 
-						else {
-							System.out.println("\tNo soy el tópico que buscaban u-u");
-								//reenviar el mismo mensaje, pero a uno de mis vecinos de modo random
-							NodePS original = (NodePS) Network.get(message.getRemitent());
-							int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
-							int rand = CommonState.r.nextInt(cantidadVecinos);
-							System.out.println("Reenviaré el mensaje a "+rand);
-							Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
-									((Transport) myNode.getProtocol(transportId)).send(original,  
-											sendNode, message, layerId);
-							}
-					} 
-					else {
-						System.out.println("\tNo se posee un tópico.");
-						NodePS original = (NodePS) Network.get(message.getRemitent());
-						int cantidadVecinos = ((Linkable) myNode.getProtocol(0)).degree();
-						int rand = CommonState.r.nextInt(cantidadVecinos);
-						System.out.println("Reenviaré el mensaje a "+rand);
-						Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
-								((Transport) myNode.getProtocol(transportId)).send(original,  
-										sendNode, message, layerId);
-					}
-				}*/
 			if(message.getTipoDeMensaje() == 0 || message.getTipoDeMensaje() == 3){ //Me lo envió un publicador
-				
 				System.out.println("\tLO RECIBO COMO TOPICO DESDE EL NODO "+message.getRemitent());
 				int topicId = ((NodePS) myNode).getTopic();
 				int idRemitent = message.getRemitent();

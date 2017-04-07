@@ -109,12 +109,6 @@ public class Initialization implements Control {
 					if(((NodePS) Network.get(j)).getTopic() >= 0 && ((NodePS) Network.get(j)).getTopic() == i%this.cantTopic){
 						((NodePS) Network.get(j)).register( (int) init.getID() );
 					}
-					if(((NodePS) Network.get(j)).getTopic() >= 0){
-						/*while(((NodePS) Network.get(j)).getSubscriberSubscribed().contains(rand)){
-							rand = CommonState.r.nextInt(Networksize);
-						}
-						((NodePS) Network.get(j)).getSubscriberSubscribed().add(rand);*/
-					}
 				}
 			}
 			rand = CommonState.r.nextInt(Networksize);
@@ -129,7 +123,7 @@ public class Initialization implements Control {
 
 				for(int sub: Sub){
 					NodePS subcriptor = (NodePS)Network.get(sub);
-					subcriptor.getTopicSub().add(temp.getTopic());
+					subcriptor.registerSub(temp.getTopic());
 				}
 				rand = CommonState.r.nextInt(Networksize);
 			}

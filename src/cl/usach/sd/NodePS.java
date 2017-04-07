@@ -77,15 +77,14 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 
 	@Override
-	public void deletePublication(String topic) {
-		// TODO Auto-generated method stub
-		
+	public void deletePublication(int idEnviar, int idTopico, int destinatario, int type) {
+		String content = "Eliminaré una publicación del tópico "+idTopico+".";
+		PubMsg message = new PubMsg(idEnviar, destinatario, content, type,idTopic);
 	}
 
 	@Override
-	public void deregisterPublisher(String topic) {
-		// TODO Auto-generated method stub
-		
+	public void deregisterPublisher(int topic) {
+		this.getRegisteredTopic().remove(topic);
 	}
 
 	@Override
@@ -101,13 +100,11 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 
 	@Override
 	public void setTopicSub(ArrayList<Integer> subscribedTopic) {
-		// TODO Auto-generated method stub
 		this.subscribedTopic = subscribedTopic;
 	}
 
 	@Override
 	public ArrayList<Integer> getTopicSub() {
-		// TODO Auto-generated method stub
 		return this.subscribedTopic;
 	}
 
@@ -176,5 +173,10 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	@Override
 	public void register(int idPublisher) {
 		this.getPublisherRegistered().add(idPublisher);
+	}
+
+	@Override
+	public void registerSub(int idTopic) {
+		this.getTopicSub().add(idTopic);		
 	}
 }

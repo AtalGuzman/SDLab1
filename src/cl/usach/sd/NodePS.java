@@ -199,7 +199,7 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		while(this.getTopicSub().contains(subcriberTopic)){
 			subcriberTopic = CommonState.r.nextInt(cantTopic);
 		}
-		System.out.println("\t\tSolicito subscribirme al tópico "+subcriberTopic); //Puede provocar print en el inicio, ya que si no 
+		System.out.println("\tSolicito subscribirme al tópico "+subcriberTopic); //Puede provocar print en el inicio, ya que si no 
 		String content = "Solicito subscribirme al tópico "+subcriberTopic;	//está subscrito a nada por defecto se subscribe a algún tópico aleatorio
 		Message msg = this.registerSub(subcriberTopic, (int)((NodePS)sendNode).getID(), content);
 		msg.setAccion(0);
@@ -221,7 +221,6 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		System.out.println("\tSolicito desubscribirme del tópico "+subcriberTopic);
 		String content = "Solicito desubscribirme del tópico "+subcriberTopic;
 		Message msg = this.deregisterSub(subcriberTopic, (int)((NodePS)sendNode).getID(), content);
-		System.out.println("El mensaje creado tiene de destinatario a "+msg.getDestination()+", de remitente a "+msg.getRemitent()+" y de contenido a "+msg.getContent());
 		msg.setAccion(1);
 		return msg;
 	}

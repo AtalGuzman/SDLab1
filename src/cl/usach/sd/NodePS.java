@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import cl.usach.sd.Message;	
 import msg.*;
 import peersim.config.Configuration;
+import peersim.core.CommonState;
 import peersim.core.GeneralNode;
 import peersim.core.Linkable;
 import peersim.core.Network;
@@ -31,6 +32,7 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	private ArrayList<Integer> subscribedTopic; //Topicos en los que estoy subscritos
 	private ArrayList<Integer> publisherRegistered; //Los publicadores que tengo registrados
 	private ArrayList<Integer> subscriberSubscribed; //Los subscriptores que tengo subscritos
+	private int cantPublication = 0;
 	
 	public NodePS(String prefix) { 
 		super(prefix);
@@ -66,26 +68,47 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 
 	@Override
-	public void registerPublisher(int idNode, int topic) {
-		this.getRegisteredTopic().add(topic);
-	}
+	public Message registerPublisher(Node sendNode, int publicationTopic) {
+		this.getRegisteredTopic().add(publicationTopic);
+		System.out.println("\tMe registraré al tópico "+publicationTopic+" (como publicador)");
+		Message msg = new PubMsg((int) this.getID(),(int)sendNode.getID(),"Me quiero registrar al tópico"+publicationTopic,0, publicationTopic);
+		msg.setAccion(0);
+		return msg;
+		}
 
 	@Override
 	public PubMsg publish(int idEnviar, int idTopico, int destinatario, String content, int type) {
-		PubMsg message = new PubMsg(idEnviar, destinatario,content, type,idTopic);
+		PubMsg message = new PubMsg(idEnviar, destinatario,content, type, idTopic);
 		return message;
 	}
 
+	public Message publish(Node sendNode, int publicationTopic){
+		System.out.println("\t Publicaré en un tópico");
+		System.out.println("\t Publicaré en el tópico "+publicationTopic);
+		String content = "He realizado una publicación en el tópico "+publicationTopic;
+		this.cantPublication = this.cantPublication+1;
+		Message msg = ((NodePS) this).publish((int)this.getID(),publicationTopic, (int)((NodePS)sendNode).getID(), content, 0);
+		return msg;
+	}
+	
 	@Override
-	public void deletePublication(int idEnviar, int idTopico, int destinatario, int type) {
-		String content = "Eliminaré una publicación del tópico "+idTopico+".";
-		PubMsg message = new PubMsg(idEnviar, destinatario, content, type,idTopic);
+	public Message deletePublication(Node sendNode, int publicationTopic){
+		System.out.println("\t Publicaré en un tópico");
+		System.out.println("\t Publicaré en el tópico "+publicationTopic);
+		String content = "He realizado una publicación en el tópico "+publicationTopic;
+		this.cantPublication = this.cantPublication-1;
+		Message msg = ((NodePS) this).publish((int)this.getID(),publicationTopic, (int)((NodePS)sendNode).getID(), content, 0);
+		return msg;
 	}
 
 	@Override
-	public void deregisterPublisher(int topic) {
-		this.getRegisteredTopic().remove(topic);
-	}
+	public Message deregisterPublisher(Node sendNode, int publicationTopic){
+		this.getRegisteredTopic().add(publicationTopic);
+		System.out.println("\tMe quiero desregistrar de tópico "+publicationTopic+" (como publicador)");
+		Message msg = new PubMsg((int) this.getID(),(int)sendNode.getID(),"Me quiero registrar al tópico"+publicationTopic,0, publicationTopic);
+		msg.setAccion(1);
+		return msg;	
+		}
 
 	@Override
 	public ArrayList<Integer> getRegisteredTopic() {
@@ -149,27 +172,15 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	public void flooding(int layerId,int idTopic){
 		int cantidadVecinos = ((Linkable) this.getProtocol(0)).degree();
 		for(int i = 0; i<cantidadVecinos; i++){
-			String content = "Soy el nodo "+this.getID()+" y haré un post en el tópico 0.";		
+			String content = "Soy el nodo "+this.getID()+" y haré un post en el tópico "+idTopic;		
 			int initMsg = (int) ((NodePS) this).getID();
-			Node sendNode = Network.get((int) ((Linkable) this.getProtocol(0)).getNeighbor(i).getID());			
-			Message message = publish(initMsg, idTopic, (int) sendNode.getID(), content, 3); //El tipo 3 es especial, es el primer mensaje
+			Node sendNode = Network.get((int) ((Linkable) this.getProtocol(0)).getNeighbor(i).getID());		
+			Message message = new PubMsg(initMsg, (int)sendNode.getID(),content, 3, idTopic); //El tipo 3 es especial, es el primer mensaje
 			message.setIntermediario(false);
 			message.setAccion(2);
 			EDSimulator.add(0, message, this, layerId);
 		}
 	}
-/*	
-	//Esta función es utilizada para la comunicación general, en caso de que yo no sea el destinatario	
-	public void flooding(int layerId){
-		int cantidadVecinos = ((Linkable) this.getProtocol(0)).degree();
-		for(int i = 0; i<cantidadVecinos; i++){
-			String content = "Soy el nodo "+this.getID()+" y haré un post en el tópico 0.";		
-			int initMsg = ((NodePS) this).getIdNode();
-			Node sendNode = Network.get((int) ((Linkable) this.getProtocol(0)).getNeighbor(i).getID());
-			Message message = new TopicMsg(initMsg, (int) sendNode.getID(),content, 3); //Notar que se crear como un mensaje de topico 2
-			EDSimulator.add(0, message, this, layerId);
-		}
-	}*/
 
 	@Override
 	public void register(int idPublisher) {
@@ -177,7 +188,49 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 
 	@Override
-	public void registerSub(int idTopic) {
-		this.getTopicSub().add(idTopic);		
+	public SubMsg registerSub(int idTopic, int sendNode, String content) {
+		this.getTopicSub().add(idTopic);
+		SubMsg msg = new SubMsg((int) this.getID(), sendNode, idTopic, content,1);
+		msg.setAccion(0);
+		return msg;		
+	}
+	
+	public Message registerSub(int subcriberTopic,Node sendNode, int cantTopic, int rand){
+		while(this.getTopicSub().contains(subcriberTopic)){
+			subcriberTopic = CommonState.r.nextInt(cantTopic);
+		}
+		System.out.println("\t\tSolicito subscribirme al tópico "+subcriberTopic); //Puede provocar print en el inicio, ya que si no 
+		String content = "Solicito subscribirme al tópico "+subcriberTopic;	//está subscrito a nada por defecto se subscribe a algún tópico aleatorio
+		Message msg = this.registerSub(subcriberTopic, (int)((NodePS)sendNode).getID(), content);
+		msg.setAccion(0);
+		return msg;
+	}
+	
+	@Override
+	public SubMsg deregisterSub(int idTopic, int sendNode, String content) {
+		this.getTopicSub().remove((Object) idTopic);
+		SubMsg msg = new SubMsg((int) this.getID(), sendNode, idTopic, content,1);
+		msg.setAccion(1);
+		return msg;		
+	}
+	
+	public Message deregisterSub(int subcriberTopic,Node sendNode, int cantTopic, int rand){
+		while(!this.getTopicSub().contains(subcriberTopic)){
+			subcriberTopic = CommonState.r.nextInt(cantTopic);
+		}
+		System.out.println("\tSolicito desubscribirme del tópico "+subcriberTopic);
+		String content = "Solicito desubscribirme del tópico "+subcriberTopic;
+		Message msg = this.deregisterSub(subcriberTopic, (int)((NodePS)sendNode).getID(), content);
+		System.out.println("El mensaje creado tiene de destinatario a "+msg.getDestination()+", de remitente a "+msg.getRemitent()+" y de contenido a "+msg.getContent());
+		msg.setAccion(1);
+		return msg;
+	}
+	
+	public int getCantPublication() {
+		return cantPublication;
+	}
+
+	public void setCantPublication(int cantPublication) {
+		this.cantPublication = cantPublication;
 	}
 }

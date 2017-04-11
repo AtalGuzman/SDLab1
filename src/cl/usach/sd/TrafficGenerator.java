@@ -7,6 +7,9 @@ import peersim.core.Linkable;
 import peersim.core.Network;
 import peersim.core.Node;
 import peersim.edsim.EDSimulator;
+
+import java.util.ArrayList;
+
 import msg.PubMsg;
 
 public class TrafficGenerator implements Control {
@@ -34,11 +37,12 @@ public class TrafficGenerator implements Control {
 		int cantidadVecinos = ((Linkable) initNode.getProtocol(0)).degree();
 		
 		System.out.println("- Tengo "+cantidadVecinos+" vecinos");
-		System.out.println("- Se generan los mensajes iniciales, por defecto en le tópico 0.\n");
+		System.out.println("- Se generan los mensajes iniciales, por defecto en el tópico: "+((NodePS) initNode).getRegisteredTopic().get(0));
 		
-		((NodePS)initNode).flooding(layerId,0);
+		((NodePS)initNode).flooding(layerId, ((NodePS) initNode).getRegisteredTopic().get(0));
 		
 		System.out.println("- Mensajes iniciales enviados.");
+				
 		return false;
 	}
 

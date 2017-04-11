@@ -91,23 +91,23 @@ public class Initialization implements Control {
 
 			//Si el topico no ha sido creado se crea, y se asigna y se registra el nodo publicador
 			if(topicosInicializados<cantTopic){
-				System.out.println("Se escoje un nodo de tópico");
+				//System.out.println("Se escoje un nodo de tópico");
 				NodePS node = (NodePS) Network.get(top);
 				while(node.getTopic() != -1){
 					top = CommonState.r.nextInt(Networksize);
 					node = (NodePS) Network.get(top);
 				}
-				System.out.println("El nodo escogido es "+node.getID());
+				//System.out.println("El nodo escogido es "+node.getID());
 				node.setTopic(topicosInicializados);
-				System.out.println("Se inicializa el tópico "+topicosInicializados);
+				//System.out.println("Se inicializa el tópico "+topicosInicializados);
 				node.getPublisherRegistered().add((int) init.getID()); //Se inicializan los publicadores registrados
-				System.out.println("Se registra al publicador "+init.getID());
+				//System.out.println("Se registra al publicador "+init.getID());
 				topicosInicializados++; 
 				//node.register((int) init.getID());
 				top = CommonState.r.nextInt(Networksize);
-				System.out.println("Se procede a registrar topico en el publicador");
+				//System.out.println("Se procede a registrar topico en el publicador");
 				init.getRegisteredTopic().add(node.getTopic());
-				System.out.println("El nodo "+init.getID()+" se ha registrado en el topico "+node.getTopic());
+				//System.out.println("El nodo "+init.getID()+" se ha registrado en el topico "+node.getTopic());
 				/*while(node.getSubscriberSubscribed().contains(rand)){
 					rand = CommonState.r.nextInt(Networksize);
 				}
@@ -128,13 +128,12 @@ public class Initialization implements Control {
 		for(int i = 0; i < Networksize; i++){
 			NodePS temp = (NodePS) Network.get(i);
 			if(temp.getTopic()>=0){
-				System.out.println("Se procece a agregar subscriptores");
 				ArrayList<Integer> Sub = temp.getSubscriberSubscribed();
 				Sub.add(rand); 
 
 				for(int sub: Sub){
 					NodePS subcriptor = (NodePS)Network.get(sub);
-					subcriptor.registerSub(temp.getTopic());
+					subcriptor.getTopicSub().add(temp.getTopic());
 				}
 				rand = CommonState.r.nextInt(Networksize);
 			}

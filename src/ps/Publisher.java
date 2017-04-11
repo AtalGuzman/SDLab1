@@ -1,16 +1,19 @@
 package ps;
 import java.util.ArrayList;
+
+import cl.usach.sd.Message;
 import msg.*;
+import peersim.core.Node;
 
 public interface Publisher{
 	
-	public void registerPublisher(int idNode, int topic);
+	public Message registerPublisher(Node sendNode, int publicationTopic);
 	
 	public PubMsg publish(int idEnviar, int idTopico, int destinatario, String content, int type);
 	
-	public void deletePublication(int idEnviar, int idTopico, int destinatario, int type);
+	public Message deletePublication(Node sendNode, int publicationTopic);
 	
-	public void deregisterPublisher(int topic);
+	public Message deregisterPublisher(Node sendNode, int publicationTopic);
 
 	public String toString();
 

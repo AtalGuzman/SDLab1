@@ -15,7 +15,8 @@ public class Message {
 	
 	private int accion; /*0 para agregar, 1 para eliminar 2 para publicar*/
 	private String content; //Corresponde al contenido del mensaje
-	private int ttl = 2;
+	private int ttl = 12;
+	
 	public Message(int remitent,  int destination, String content,int tipoDeMensaje) {
 		this.setRemitent(remitent);
 		this.setDestination(destination);

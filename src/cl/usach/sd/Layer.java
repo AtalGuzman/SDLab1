@@ -93,7 +93,8 @@ public class Layer implements Cloneable, EDProtocol {
 								System.out.println("\tSoy el nodo "+myNode.getID()+" y tengo el tópico "+((NodePS) myNode).getTopic());
 								System.out.println("\tHe recibido una publicación del nodo "+message.getRemitent());
 								System.out.println("\tEnviaré notificación a todos los  subscriptores");
-								ArrayList<TopicMsg> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID(), topicId);
+								String content = "Se ha generado un post en el topico "+topicId;
+								ArrayList<TopicMsg> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID(), topicId,content);
 								for(Message msj: notificaciones){
 									if(msj.getTtl() >0 ) sendmessage(myNode, layerId, msj);
 								} 
@@ -171,7 +172,8 @@ public class Layer implements Cloneable, EDProtocol {
 								//Send message
 								System.out.println("\tHe recibido una solicitud de actualización del nodo "+message.getRemitent());
 								System.out.println("\tEnviaré notificación a todos los  publicadores");
-								ArrayList<TopicMsg> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID(), topicId);
+								String content = "Se ha solicitado una actualización en el topico "+topicId;
+								ArrayList<TopicMsg> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID(), topicId, content);
 								for(Message msj: notificaciones){
 									if(msj.getTtl() >0 ) sendmessage(myNode, layerId, msj);
 								} 
@@ -450,7 +452,7 @@ public class Layer implements Cloneable, EDProtocol {
 				msg = ((NodePS) myNode).requestUpdate((int) myNode.getID(), subcriberTopic, (int)sendNode.getID(), content);
 			}
 			else{
-				System.out.println("\tMe subscribiré al topico "+subcriberTopic;
+				System.out.println("\tMe subscribiré al topico "+subcriberTopic);
 				msg = ((NodePS) myNode).registerSub(subcriberTopic, sendNode,  cantTopic, rand);
 			}
 		}

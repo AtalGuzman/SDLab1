@@ -24,7 +24,7 @@ public interface Topic{
 
 	public Boolean registrado(int idNode);
 	
-	public ArrayList<TopicMsg> Publish(ArrayList<Integer> idSubscriber, int remitent, int idTopico);
+	public ArrayList<TopicMsg> Publish(ArrayList<Integer> idSubscriber, int remitent, int idTopic,String content);
 	
 	public void register(int idPublisher);
 }

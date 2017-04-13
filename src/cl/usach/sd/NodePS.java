@@ -159,9 +159,8 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 
 	@Override
-	public ArrayList<TopicMsg> Publish(ArrayList<Integer> idSubscriber, int remitent, int idTopic) {
+	public ArrayList<TopicMsg> Publish(ArrayList<Integer> idSubscriber, int remitent, int idTopic,String content) {
 		ArrayList<TopicMsg> mensajesPorEnviar = new ArrayList<TopicMsg>();
-		String content = "Se ha generado un post en el topico "+this.idTopic;
 		for(int i = 0; i < this.subscriberSubscribed.size();i++){
 			TopicMsg notificacion = new TopicMsg(remitent,subscriberSubscribed.get(i),content,2,idTopic);
 			mensajesPorEnviar.add(notificacion);

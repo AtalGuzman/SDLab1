@@ -20,4 +20,7 @@ public interface Subscriber{
 	public Message registerSub(int subcriberTopic,Node sendNode, int cantTopic, int rand);
 	
 	public SubMsg deregisterSub(int idTopic, int sendNode, String content); 
+	
+	public SubMsg requestUpdate(int idEnviar, int idTopico, int destinatario, String content);
+	
 	}

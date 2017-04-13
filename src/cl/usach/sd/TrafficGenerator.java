@@ -39,7 +39,7 @@ public class TrafficGenerator implements Control {
 		System.out.println("- Tengo "+cantidadVecinos+" vecinos");
 		System.out.println("- Se generan los mensajes iniciales, por defecto en el tópico: "+((NodePS) initNode).getRegisteredTopic().get(0));
 		
-		((NodePS)initNode).flooding(layerId, ((NodePS) initNode).getRegisteredTopic().get(0));
+		((NodePS)initNode).flooding(layerId, ((NodePS) initNode).getRegisteredTopic().get(0),3);
 		
 		System.out.println("- Mensajes iniciales enviados.");
 				

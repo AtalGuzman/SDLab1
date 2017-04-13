@@ -169,19 +169,19 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		return mensajesPorEnviar;
 	}
 
-	public void flooding(int layerId,int idTopic){
+	public void flooding(int layerId,int idTopic, int type){
 		int cantidadVecinos = ((Linkable) this.getProtocol(0)).degree();
 		for(int i = 0; i<cantidadVecinos; i++){
 			String content = "Soy el nodo "+this.getID()+" y haré un post en el tópico "+idTopic;		
 			int initMsg = (int) ((NodePS) this).getID();
 			Node sendNode = Network.get((int) ((Linkable) this.getProtocol(0)).getNeighbor(i).getID());		
-			Message message = new PubMsg(initMsg, (int)sendNode.getID(),content, 3, idTopic); //El tipo 3 es especial, es el primer mensaje
+			Message message = new PubMsg(initMsg, (int)sendNode.getID(),content, type, idTopic); //El tipo 3 es especial, es el primer mensaje
 			message.setIntermediario(false);
 			message.setAccion(2);
 			EDSimulator.add(0, message, this, layerId);
 		}
 	}
-
+	
 	@Override
 	public void register(int idPublisher) {
 		this.getPublisherRegistered().add(idPublisher);
@@ -223,6 +223,12 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		Message msg = this.deregisterSub(subcriberTopic, (int)((NodePS)sendNode).getID(), content);
 		msg.setAccion(1);
 		return msg;
+	}
+	
+	public SubMsg requestUpdate(int idEnviar, int idTopico, int destinatario, String content){
+		SubMsg message = new SubMsg(idEnviar, destinatario,idTopico, content,1);
+		message.setAccion(2);
+		return message;
 	}
 	
 	public int getCantPublication() {

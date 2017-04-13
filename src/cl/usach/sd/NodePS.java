@@ -103,7 +103,7 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 
 	@Override
 	public Message deregisterPublisher(Node sendNode, int publicationTopic){
-		this.getRegisteredTopic().add(publicationTopic);
+		this.getRegisteredTopic().remove((Object) publicationTopic);
 		System.out.println("\tMe quiero desregistrar de tópico "+publicationTopic+" (como publicador)");
 		Message msg = new PubMsg((int) this.getID(),(int)sendNode.getID(),"Me quiero registrar al tópico"+publicationTopic,0, publicationTopic);
 		msg.setAccion(1);

@@ -197,7 +197,6 @@ public class Layer implements Cloneable, EDProtocol {
 					if(msg.getTtl()>0) sendmessage(myNode, layerId,msg);
 				}
 			}
-			
 		}
 		else{
 			/*ENVIARÉ UN MENSAJE*/
@@ -370,9 +369,11 @@ public class Layer implements Cloneable, EDProtocol {
 		int decision = CommonState.r.nextInt(2);
 		decision = CommonState.r.nextInt(2);
 		if(decision == 0){
+			System.out.println("Me subscribo");
 			msg = ((NodePS) myNode).registerPublisher(sendNode, publicationTopic);
 		}
 		else{
+			System.out.println("El topico a eliminar es "+publicationTopic);
 			publicationTopic = CommonState.r.nextInt(((NodePS) myNode).getRegisteredTopic().size());
 			msg = ((NodePS) myNode).deregisterPublisher(sendNode, publicationTopic);
 		}

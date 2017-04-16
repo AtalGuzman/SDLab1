@@ -41,7 +41,7 @@ public class Layer implements Cloneable, EDProtocol {
 		//System.out.println(ttlWarning);
 
 		int cantidadDeVecinos;
-		int k = 4;
+		int k = 2;
 		int siguienteAccion = CommonState.r.nextInt(3);
 		int cantTopic = Configuration.getInt("init.1statebuilder.cantTopic");
 		int rand;
@@ -465,14 +465,16 @@ public class Layer implements Cloneable, EDProtocol {
 		Message msg;
 		int decision = CommonState.r.nextInt(2);
 		decision = CommonState.r.nextInt(2);
-		if(decision == 0){
-			System.out.println("Me subscribo");
-			msg = ((NodePS) myNode).registerPublisher(sendNode, publicationTopic);
+		//Si es 1 me puedo deregistrar siempre y cuando esté registrado en algo
+		if(decision == 1 && ((NodePS) myNode).getRegisteredTopic().size() > 0){
+			System.out.println("Me desregistro");
+			msg = ((NodePS) myNode).deregisterPublisher(sendNode, publicationTopic);
 		}
 		else{
-			System.out.println("El topico a eliminar es "+publicationTopic);
+			System.out.println("El topico a registrar es "+publicationTopic);
+			System.out.println("Tengo "+((NodePS) myNode).getRegisteredTopic().size());
 			publicationTopic = CommonState.r.nextInt(((NodePS) myNode).getRegisteredTopic().size());
-			msg = ((NodePS) myNode).deregisterPublisher(sendNode, publicationTopic);
+			msg = ((NodePS) myNode).registerPublisher(sendNode, publicationTopic);
 		}
 		return msg;
 	}
@@ -487,6 +489,7 @@ public class Layer implements Cloneable, EDProtocol {
 		Message msg;
 		int decision = CommonState.r.nextInt(2);
 		decision = CommonState.r.nextInt(2);
+		//Puedo eliminar publicaciones siempre y cuando tenga publicaciones
 		if(((NodePS) myNode).getCantPublication() > 0 && decision == 0){
 			publicationTopic = CommonState.r.nextInt(((NodePS) myNode).getRegisteredTopic().size());
 			msg = ((NodePS) myNode).deletePublication(sendNode, publicationTopic);
@@ -529,6 +532,11 @@ public class Layer implements Cloneable, EDProtocol {
 		return msg;
 	}
 	
+	
+	/*
+	 * Cuando yo no soy el destino puedo enviar mensajes
+	 * el mensaje es el mensaje a reenviar
+	 * el nodo corresponde al nodo que reenviará el mensaje*/
 	public void envioIntermediario(Message message, Node myNode){
 		if(message.getIntermediario()){
 			//System.out.println("\tEstoy enviando como intermediario este mensaje al nodo "+message.getDestination());

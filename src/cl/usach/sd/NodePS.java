@@ -26,7 +26,7 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	 * el patrón de diseño publisher-subscriber, es decir,
 	 * un nodo puede ser tanto un publisher, como un subscriber,
 	 * como un tópico.	 */
-	private int idNode; //IdNode es utilizado como un identificador del nodo
+	//private int idNode; //IdNode es utilizado como un identificador del nodo
 	private int idTopic;
 	private ArrayList<Integer> registeredTopic; //Tópicos en los que publico
 	private ArrayList<Integer> subscribedTopic; //Topicos en los que estoy subscritos
@@ -34,21 +34,14 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	private ArrayList<Integer> subscriberSubscribed; //Los subscriptores que tengo subscritos
 	private int cantPublication = 0;
 	
+	/*Constructor de un nodo, notar que en un principio 
+	 * uno nodo no posee ningún tópico y por lo tanto
+	 * es inicializado con -1
+	 *  */
 	public NodePS(String prefix) { 
 		super(prefix);
-		this.setIdNode(0);
-		this.idTopic = -1; //ALgunos cambiarán en la incialización
-		//this.setSubscriberSubscribed(new ArrayList<Integer>());
-	//	this.setPublisherRegistered(new ArrayList<Integer>());
+		this.idTopic = -1; 
 
-	}
-
-	public int getIdNode() {
-		return idNode;
-	}
-
-	public void setIdNode(int idNode) {
-		this.idNode = idNode;
 	}
 
 	@Override

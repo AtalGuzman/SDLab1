@@ -7,13 +7,18 @@ public class Message {
 	private int remitent; 
 	private int destination; //Corresponde al nodo al que se le entregará el mensaje
 	private Boolean intermediario;
-	private int tipoDeMensaje; /*Corresponde a la forma en que está actuando un nodo:
-	0, para un publicador
-	1 para un subscriptor
-	2 para un topico, 
-	3 inicialización*/
+	private int tipoDeMensaje; 
+	/*
+	 * Corresponde a la forma en que está actuando un nodo:
+	 * 0, para un publicador
+	 * 1 para un subscriptor
+	 * 2 para un topico, 
+	 * 3 inicialización*/
 	
-	private int accion; /*0 para agregar, 1 para eliminar 2 para publicar*/
+	private int accion; 
+	/* 0 para agregar, 
+	 * 1 para eliminar 
+	 * 2 para publicar*/
 	private String content; //Corresponde al contenido del mensaje
 	private int ttl = 15;
 	

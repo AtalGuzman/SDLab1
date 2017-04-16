@@ -49,8 +49,8 @@ public class Initialization implements Control {
 	}
 
 	/**
-	 * Ejecución de la inicialización en el momento de crear el overlay en el
-	 * sistema
+	 * Ejecución de la inicialización en el momento de crear la 
+	 * capa del sistema
 	 */
 	@Override
 	public boolean execute() {
@@ -61,9 +61,6 @@ public class Initialization implements Control {
 			return false;
 		}
 		System.out.println("\n\tEJECUCIÓN DEL SIMULADOR");
-		/**
-		 * Para comenzar tomaremos un nodo cualquiera de la red, a través de un random
-		 */
 		/**Es conveniente inicializar los nodos, puesto que los nodos 
 		 * son una clase clonable y si asignan valores desde el constructor
 		 *  todas tomaran los mismos valores, puesto que tomaran la misma dirección
@@ -75,13 +72,17 @@ public class Initialization implements Control {
 		int rand = CommonState.r.nextInt(Networksize);
 
 		System.out.println("*******************************************************\n");
+		/*Se inicializa cada una de las
+		 * listas necesarias para identificar 
+		 * a los publicadores, subscriptores y tópicos
+		 * */
 		for(int j=0; j < Networksize; j++){
 			
 			NodePS init = (NodePS) Network.get(j);
-			init.setRegisteredTopic(new ArrayList<Integer>());
+			init.setRegisteredTopic(new ArrayList<Integer>()); 		//Tópicos a los que se registra
 			init.setSubscriberSubscribed(new ArrayList<Integer>()); // Se inicializan los subscriptores subscritos al nodo actuando como topico
-			init.setTopicSub(new ArrayList<Integer>());
-			init.setPublisherRegistered(new ArrayList<Integer>()); //Los publicadores que tengo registrados
+			init.setTopicSub(new ArrayList<Integer>());				//Tópicos a los que estoy subscrito
+			init.setPublisherRegistered(new ArrayList<Integer>()); 	//Los publicadores que tengo registrados
 			
 		}
 		
@@ -97,24 +98,18 @@ public class Initialization implements Control {
 					top = CommonState.r.nextInt(Networksize);
 					node = (NodePS) Network.get(top);
 				}
-				//System.out.println("El nodo escogido es "+node.getID());
+			//Se inicializa el tópico
 				node.setTopic(topicosInicializados);
-				//System.out.println("Se inicializa el tópico "+topicosInicializados);
-				node.getPublisherRegistered().add((int) init.getID()); //Se inicializan los publicadores registrados
-				//System.out.println("Se registra al publicador "+init.getID());
+			//Se inicializan los publicadores registrados
+				node.getPublisherRegistered().add((int) init.getID()); 
+			//Se registra al publicador
 				topicosInicializados++; 
-				//node.register((int) init.getID());
 				top = CommonState.r.nextInt(Networksize);
-				//System.out.println("Se procede a registrar topico en el publicador");
+			//Se procede a registrar topico en el publicador
 				init.getRegisteredTopic().add(node.getTopic());
-				//System.out.println("El nodo "+init.getID()+" se ha registrado en el topico "+node.getTopic());
-				/*while(node.getSubscriberSubscribed().contains(rand)){
-					rand = CommonState.r.nextInt(Networksize);
-				}
-				node.getSubscriberSubscribed().add(rand);*/
-
 			}
 			else{
+			//Si el nodo ya está creado, entonces puedo registrarme como publicador
 				for(int j=0; j < Networksize; j++){
 					if(((NodePS) Network.get(j)).getTopic() >= 0 && ((NodePS) Network.get(j)).getTopic() == i%this.cantTopic){
 						((NodePS) Network.get(j)).getPublisherRegistered().add( (int) init.getID() );
@@ -125,6 +120,7 @@ public class Initialization implements Control {
 			rand = CommonState.r.nextInt(Networksize);
 		}
 		
+		//A continuación se procede a inicializar y crear los subscriptores
 		for(int i = 0; i < Networksize; i++){
 			NodePS temp = (NodePS) Network.get(i);
 			if(temp.getTopic()>=0){
@@ -138,18 +134,11 @@ public class Initialization implements Control {
 				rand = CommonState.r.nextInt(Networksize);
 			}
 		}
-	    
-		//Todos los topicos están inicializados
-		//Falta agregar las subscripciones D:
-		/*for(int j=0; j < Networksize; j++){
-			if(((NodePS) Network.get(j)).getTopic() == (i+1)%this.cantTopic){
-				((NodePS) Network.get(j)).getSubscriberSubscribed().add( (int) Network.get(rand).getID() );
-			}
-		}*/
-		
+	
 		System.out.println("\n*******************************************************\n");
 
 		
+		//Se muestra el contenido de la red según la inicialización de subscriptores, publicadores y tópicos
 		for (int i = 0; i < Networksize; i++) {
 			NodePS temp = (NodePS) Network.get(i);
 			if(temp.getTopic() != -1){

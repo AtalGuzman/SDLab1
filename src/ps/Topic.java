@@ -10,8 +10,7 @@ import ps.Subscriber;
 
 public interface Topic{
 	
-	public void publish(String publisher);
-
+	/*Funciones descritas en NodePS*/
 	public String toString();
 
 	public int getTopic();

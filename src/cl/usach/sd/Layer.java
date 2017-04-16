@@ -260,7 +260,7 @@ public class Layer implements Cloneable, EDProtocol {
 					rand = CommonState.r.nextInt(cantidadDeVecinos);
 					Node sendNode = Network.get((int) ((Linkable) myNode.getProtocol(0)).getNeighbor(rand).getID());
 					int subcriberTopic = CommonState.r.nextInt(cantTopic);
-					Message msg = ((NodePS) myNode).registerSub(subcriberTopic, sendNode, cantTopic, rand);
+					Message msg = ((NodePS) myNode).registerSub(subcriberTopic, sendNode, cantTopic);
 					if(msg.getTtl()>0) sendmessage(myNode, layerId,msg);
 				}
 			}
@@ -412,7 +412,9 @@ public class Layer implements Cloneable, EDProtocol {
 	
 	/*Un nodo que no tiene nada que hacer, por ejemplo el mensaje no está dirigido a mí
 	 * y además el mensaje no tiene ttl
-	 * Recibo al nodo actual, recibo
+	 * Recibe al nodo actual
+	 * la cantidad de tópicos que están en la red
+	 * y el número que determinará la siguiente acción
 	 * */
 	public void queHacer(Node myNode, int cantTopic, int siguienteAccion){
 		int cantidadDeVecinos = ((Linkable) myNode.getProtocol(0)).degree();;
@@ -513,7 +515,7 @@ public class Layer implements Cloneable, EDProtocol {
 		decision = CommonState.r.nextInt(2);
 		if(((NodePS) myNode).getTopicSub().size() > 0 && decision == 0){
 			subcriberTopic = CommonState.r.nextInt(((NodePS) myNode).getTopicSub().size());
-			msg = ((NodePS) myNode).deregisterSub(subcriberTopic, sendNode, cantTopic, rand);
+			msg = ((NodePS) myNode).deregisterSub(subcriberTopic, sendNode, cantTopic);
 		}
 		else{ //Puedo subscribirme o pedir una actualización
 			if(((NodePS) myNode).getTopicSub().contains((Object) subcriberTopic)){
@@ -524,7 +526,7 @@ public class Layer implements Cloneable, EDProtocol {
 			}
 			else{
 				System.out.println("\tMe subscribiré al topico "+subcriberTopic);
-				msg = ((NodePS) myNode).registerSub(subcriberTopic, sendNode,  cantTopic, rand);
+				msg = ((NodePS) myNode).registerSub(subcriberTopic, sendNode,  cantTopic);
 			}
 		}
 		msg.setTipoDeMensaje(1);

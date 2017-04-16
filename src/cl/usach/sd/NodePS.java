@@ -43,13 +43,7 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		this.idTopic = -1; 
 
 	}
-
-	@Override
-	public void publish(String publisher) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public int getTopic() {
 		return this.idTopic;
@@ -61,6 +55,10 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 
 	@Override
+	/* Función utilizada para registrar un publicador
+	 * sendNode, es el nodo que debe registrar
+	 * publicationTopic es el tópico en el cual será registrado
+	 * */
 	public Message registerPublisher(Node sendNode, int publicationTopic) {
 		this.getRegisteredTopic().add(publicationTopic);
 		System.out.println("\tMe registraré al tópico "+publicationTopic+" (como publicador)");
@@ -70,11 +68,22 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		}
 
 	@Override
+	/* Función necesaria para realizar las publicaciones
+	 * se toma la id del nodo que va a enviar la publicación idEnviar
+	 * la id del nodo de destino destinatario
+	 * la id del tópico en el cual se publica
+	 * el contenido del mensaje content
+	 * y type que es el tipo de mensaje
+	 * */
 	public PubMsg publish(int idEnviar, int idTopico, int destinatario, String content, int type) {
 		PubMsg message = new PubMsg(idEnviar, destinatario,content, type, idTopic);
 		return message;
 	}
 
+	/* Función alternativa para la publicación
+	 * Se utiliza el nodo que recibirá el nodo sendNode
+	 * y el tópico donde se va a publicar publicationTopic
+	 * */
 	public Message publish(Node sendNode, int publicationTopic){
 		System.out.println("\t Publicaré en un tópico");
 		System.out.println("\t Publicaré en el tópico "+publicationTopic);
@@ -85,6 +94,10 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 	
 	@Override
+	/* Función para eliminar una publicación
+	 * es casi igual a la función anterior,
+	 * pero disminuye la cantidad de publicaciones
+	 * */
 	public Message deletePublication(Node sendNode, int publicationTopic){
 		System.out.println("\t Publicaré en un tópico");
 		System.out.println("\t Publicaré en el tópico "+publicationTopic);
@@ -95,6 +108,10 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 
 	@Override
+	/* Función para desregistrar a un nodo
+	 * sendNode, corresponde al nodo a enviar el mensaje
+	 * publicationTopic, es el tópico a registrarse
+	 * */
 	public Message deregisterPublisher(Node sendNode, int publicationTopic){
 		this.getRegisteredTopic().remove((Object) publicationTopic);
 		System.out.println("\tMe quiero desregistrar de tópico "+publicationTopic+" (como publicador)");
@@ -141,6 +158,9 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 
 	@Override
+	/* Función para saber si está registrado el nodo
+	 * idNode, es la id del nodo a revisar si está registrado
+	 * */
 	public Boolean registrado(int idNode){
 		Boolean regist = false;
 		for(int i = 0; i < this.publisherRegistered.size();i++){
@@ -152,6 +172,14 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 
 	@Override
+	/* Función publish para el tópico
+	 * genera los mensajes para hacer notificaciones
+	 * o para solicitar actualizaciones
+	 * idSubcriber, es la lista de nodos a enviar
+	 * idTopic, el tópico a enviar
+	 * remitent, el que envía el mensaje
+	 * content, contenido del mensaje
+	 * */
 	public ArrayList<TopicMsg> Publish(ArrayList<Integer> idSubscriber, int remitent, int idTopic,String content) {
 		ArrayList<TopicMsg> mensajesPorEnviar = new ArrayList<TopicMsg>();
 		for(int i = 0; i < this.subscriberSubscribed.size();i++){
@@ -161,6 +189,11 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		return mensajesPorEnviar;
 	}
 
+	/* Función utilizada para iniciar el tráfico de mensajes
+	 * contiene el layerId, la capa de la transmisión
+	 * idTopic, tópico donde se enviará
+	 * type, tipo de mensaje a enviar
+	 * */
 	public void flooding(int layerId,int idTopic, int type){
 		int cantidadVecinos = ((Linkable) this.getProtocol(0)).degree();
 		for(int i = 0; i<cantidadVecinos; i++){
@@ -175,11 +208,20 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 	
 	@Override
+	/* registrar un publicador a un tópico
+	 * necesita la id del publicador a registrar idPublisher
+	 * */
 	public void register(int idPublisher) {
 		this.getPublisherRegistered().add(idPublisher);
 	}
 
 	@Override
+	/* Función para subscribir a un tópico, este genera un mensaje
+	 * al tópico para que lo subscriba
+	 * utiliza la id del tópico, idTopic
+	 * el nodo al cual se enviará el mensaje, sendNode
+	 * y el contenido del mensaje, content
+	 * */
 	public SubMsg registerSub(int idTopic, int sendNode, String content) {
 		this.getTopicSub().add(idTopic);
 		SubMsg msg = new SubMsg((int) this.getID(), sendNode, idTopic, content,1);
@@ -187,7 +229,13 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		return msg;		
 	}
 	
-	public Message registerSub(int subcriberTopic,Node sendNode, int cantTopic, int rand){
+	/* Función que revisa si se está subscrito o no a cieto tópico
+	 * y luego crea el mensaje
+	 * recibe el tópico a subscribir, subcriberTopic
+	 * el nodo a enviar, sendNode
+	 * cantTopic, la cantidad de tópicos de la red
+	 * */
+	public Message registerSub(int subcriberTopic,Node sendNode, int cantTopic){
 		while(this.getTopicSub().contains(subcriberTopic)){
 			subcriberTopic = CommonState.r.nextInt(cantTopic);
 		}
@@ -199,6 +247,11 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	}
 	
 	@Override
+	/* Genera un mensaje de eliminar subscripción
+	 * recibe la id del tópico, idTopic
+	 * el nodo a enviar el mensaje sendNode
+	 * y el contenido del mensaje
+	 * */
 	public SubMsg deregisterSub(int idTopic, int sendNode, String content) {
 		this.getTopicSub().remove((Object) idTopic);
 		SubMsg msg = new SubMsg((int) this.getID(), sendNode, idTopic, content,1);
@@ -206,7 +259,13 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		return msg;		
 	}
 	
-	public Message deregisterSub(int subcriberTopic,Node sendNode, int cantTopic, int rand){
+	/* Función para revisar si el tópico a desubscribir me tiene subscrito
+	 * y entonces crear el mensaje de eliminación de subscripción
+	 * subcriberTopic, es el tópico a desubcribirme
+	 * sendNOde, nodo a envair el mensaje
+	 * cantTopic, la cantidad de tópicos en la red
+	 * */
+	public Message deregisterSub(int subcriberTopic,Node sendNode, int cantTopic){
 		while(!this.getTopicSub().contains(subcriberTopic)){
 			subcriberTopic = CommonState.r.nextInt(cantTopic);
 		}
@@ -217,6 +276,12 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 		return msg;
 	}
 	
+	/* Función utilizada por un subscriptor para solicitar una actualización a un tópico
+	 * idEnviar, nodo remitente del mensaje
+	 * destinatario, nodo que va a recibir el mensaje
+	 * idTopic, id del tópico a que solicito mi mensaje
+	 * content, contenido del mensaje
+	 * */
 	public SubMsg requestUpdate(int idEnviar, int idTopico, int destinatario, String content){
 		SubMsg message = new SubMsg(idEnviar, destinatario,idTopico, content,1);
 		message.setAccion(2);

@@ -6,7 +6,7 @@ import msg.*;
 import peersim.core.Node;
 
 public interface Publisher{
-	
+	/*Funciones descritas en NodePS*/
 	public Message registerPublisher(Node sendNode, int publicationTopic);
 	
 	public PubMsg publish(int idEnviar, int idTopico, int destinatario, String content, int type);

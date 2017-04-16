@@ -9,6 +9,7 @@ import peersim.core.Node;
 
 public interface Subscriber{
 
+	/*Funciones descritas en NodePS*/
 	public String toString();
 	
 	public void setTopicSub(ArrayList<Integer> subscribedTopic);
@@ -17,7 +18,7 @@ public interface Subscriber{
 	
 	public SubMsg registerSub(int idTopic, int sendNode, String content);
 	
-	public Message registerSub(int subcriberTopic,Node sendNode, int cantTopic, int rand);
+	public Message registerSub(int subcriberTopic,Node sendNode, int cantTopic);
 	
 	public SubMsg deregisterSub(int idTopic, int sendNode, String content); 
 	

@@ -23,11 +23,20 @@ public class Layer implements Cloneable, EDProtocol {
 	private int transportId;
 	private int layerId;
 	int cantTopic = Configuration.getInt("init.1statebuilder.cantTopic");
-	/**
+	/************************************************************************************************************************
 	 * Método en el cual se va a procesar el mensaje que ha llegado al Nodo
 	 * desde otro Nodo. Cabe destacar que el mensaje va a ser el evento descrito
 	 * en la clase, a través de la simulación de eventos discretos.
-	 */
+	 * 
+	 * En la consola de comandos se observará la traza del mensaje nodo a nodo,
+	 * cada vez que un mensaje llegue a destino las acciones realizadas por el nodo
+	 * están encuadradas por arriba y por abajo con asteriscos.
+	 * 
+	 * En esta situación se describe si el nodo actúa como subscriptor, publicador o nodo
+	 * se describen las acciones que llevan a cabo y en caso de que se realiza un cambio en la red
+	 * ya sea por la creación de un tópico por parte de un publicador o un tópico registra/deregistra a un publicador
+	 * o un suscribe/desuscribe a un subscriptor
+	*************************************************************************************************************************/
 	@Override
 	public void processEvent(Node myNode, int layerId, Object event) {
 		//System.out.println("***** LAYER *****");
@@ -169,10 +178,10 @@ public class Layer implements Cloneable, EDProtocol {
 			//Si tengo el tópico solicitado	
 							if(topicId == ((SubMsg) message).getIdTopic()){
 								System.out.println("\tSoy el nodo "+myNode.getID()+" y tengo el tópico "+((NodePS) myNode).getTopic());
-								System.out.println("\tHe recibido una solicitud de subscripción del nodo "+message.getRemitent());
+								System.out.println("\tHe recibido una solicitud de desubscripción del nodo "+message.getRemitent());
 			//Si lo tengo subscrito lo puedo eliminar
 								if(((NodePS) myNode).getSubscriberSubscribed().contains(message.getRemitent())){
-									System.out.println("\tHe subscrito al nodo "+message.getRemitent());
+									System.out.println("\tHe desubscrito al nodo "+message.getRemitent());
 									((NodePS) myNode).getSubscriberSubscribed().remove((Object)message.getRemitent());
 									updateSystem();
 								}
@@ -259,8 +268,8 @@ public class Layer implements Cloneable, EDProtocol {
 		}
 		else{
 			/*En caso de que no corresponda con el nodo de destino
-			 * quiere decir que el mensaje lo estoy mandando yo, PERO este mensaje
-			 * es enviado SOLO si el ttl es mayor que 0*/
+			 * quiere decir que el mensaje lo envié yo, PERO este mensaje
+			 * es reenviado SOLO si el ttl es mayor que 0*/
 			if(message.getTtl() > 0){
 				//El mensaje tipo 3, es especial ya que se maneja como el iniciador de todo el tráfico
 				if(message.getTipoDeMensaje() == 3){ //Primer mensaje
@@ -342,7 +351,8 @@ public class Layer implements Cloneable, EDProtocol {
 	 * myNode: es el nodo que enviará el mensaje
 	 * Message, el mensaje a ser reenviar
 	 * tipoMensaje, es el tipo del mensaje para que pueda ser procesado en el nodo de destino
-	 * k es la cantidad de nodos a los que se reenviará el mensaje	*/
+	 * k es la cantidad de nodos a los que se reenviará el mensaje	
+	 * */
 	
 	public void difundir(Node myNode, Message message, int tipoMensaje,int k){
 		NodePS original = (NodePS) Network.get(message.getRemitent());
@@ -369,9 +379,11 @@ public class Layer implements Cloneable, EDProtocol {
 	 * */
 	public void updateSystem(){
 		System.out.println("\t\nLa nueva configuración del sistema es \n\n");
+		int topicAtNet = 0;
 		for (int i = 0; i < Network.size(); i++) {
 			NodePS temp = (NodePS) Network.get(i);
 			if(temp.getTopic() != -1){
+				topicAtNet++;
 				System.out.println("- Soy el nodo "+temp.getID()+" y tengo el topico "+temp.getTopic()+".");
 				ArrayList<Integer> publicadores = ((NodePS) temp).getPublisherRegistered();
 				ArrayList<Integer> publicoEn = ((NodePS) temp).getRegisteredTopic();
@@ -399,6 +411,7 @@ public class Layer implements Cloneable, EDProtocol {
 				}
 			}
 		}
+		System.out.println("\tLa red tiene "+topicAtNet+" tópicos");
 	}
 	
 	/*Un nodo que no tiene nada que hacer, por ejemplo el mensaje no está dirigido a mí
@@ -436,10 +449,16 @@ public class Layer implements Cloneable, EDProtocol {
 					if(cantTopic < Network.size()){
 						System.out.println("\t\tCrearé un tópico");
 			//El tópico creado queda en mi mismo.
-						((NodePS) myNode).setTopic(cantTopic);
-						System.out.println("\t\tEl tópico creado corresponde a "+cantTopic);
+						int topics = 0;
+						for (int i = 0; i < Network.size(); i++) {
+							NodePS temp = (NodePS) Network.get(i);
+							if(temp.getTopic() != -1){
+								topics++;
+							}
+						}
+						((NodePS) myNode).setTopic(topics);
+						System.out.println("\t\tEl tópico creado corresponde a "+topics);
 						System.out.println("\t\tEl tópico queda guardado en mi mismo");
-						this.cantTopic = this.cantTopic+1;
 						updateSystem();
 					}
 				}

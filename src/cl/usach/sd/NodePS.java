@@ -25,7 +25,8 @@ public class NodePS extends GeneralNode implements Publisher,Subscriber,Topic{
 	 * que un nodo pueda ser cualquiera de los tres parcipantes
 	 * el patrón de diseño publisher-subscriber, es decir,
 	 * un nodo puede ser tanto un publisher, como un subscriber,
-	 * como un tópico.	 */
+	 * como un tópico.	 
+	 * */
 	//private int idNode; //IdNode es utilizado como un identificador del nodo
 	private int idTopic;
 	private ArrayList<Integer> registeredTopic; //Tópicos en los que publico

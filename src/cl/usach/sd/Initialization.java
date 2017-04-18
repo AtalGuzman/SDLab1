@@ -42,7 +42,8 @@ public class Initialization implements Control {
 		// en el archivo de configuración init.1statebuilder.argExample 100 y se puede usar ese valor.
 		this.argExample = Configuration.getInt(prefix + ".argExample");
 		this.initValue = Configuration.getInt(prefix + ".initValue");
-		this.cantTopic = Configuration.getInt(prefix+".cantTopic");
+		this.cantTopic = Configuration.getInt(prefix+".cantTopic"); //Cantidad de tópicos es la cantidad inicial de la red. 
+																	//Está creado bajo el supuesto de que existe al menos 1 tópico cuando inicia la red
 		System.out.println("Arg: " + argExample);
 		System.out.println("Valor inicial: "+ initValue);
 		System.out.println("Cantidad de Topicos: "+cantTopic);

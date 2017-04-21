@@ -39,10 +39,11 @@ public class Layer implements Cloneable, EDProtocol {
 	*************************************************************************************************************************/
 	@Override
 	public void processEvent(Node myNode, int layerId, Object event) {
+		getStats();
 		//System.out.println("***** LAYER *****");
 		//System.out.println("\tSe procesa un evento");
 		Message message = (Message) event;
-		System.out.println("\tMensajes pasando por el nodo "+myNode.getID()+" y el destinario es "+message.getDestination());
+		System.out.println("\tMensaje en nodo "+myNode.getID()+". Destinatario: "+message.getDestination());
 		//String ttlWarning = "\tEl mensaje tiene ttl "+message.getTtl();
 		//if(message.getTtl() <= 0){
 			//ttlWarning+=". El mensaje ya no será reenviado :c";
@@ -71,11 +72,11 @@ public class Layer implements Cloneable, EDProtocol {
 				if(topicId >=0){					
 			//Si el tópico corresponde al tópico que poseo
 					if(topicId == ((PubMsg) message).getIdTopico()){
-						System.out.println("\tSoy el tópico que buscaban");
+						//System.out.println("\tSoy el tópico que buscaban");
 			//Si la acción es cero, entonces se trata de una solicitud de registro
 						if(message.getAccion() == 0){
 							System.out.println("\n**********************************\n");
-							System.out.println("\tSoy el nodo "+myNode.getID()+" y tengo el tópico "+((NodePS) myNode).getTopic());
+							System.out.println("\tNodo "+myNode.getID()+" tópico "+((NodePS) myNode).getTopic());
 							System.out.println("\tHe recibido una solicitud de registro del nodo "+message.getRemitent());
 			//Si no tengo registrado el nodo, lo registro
 							if( !((NodePS) myNode).getPublisherRegistered().contains(message.getRemitent()) ){
@@ -92,7 +93,7 @@ public class Layer implements Cloneable, EDProtocol {
 						else if(message.getAccion() == 1){
 							//Eliminar al nodo
 							System.out.println("\n**********************************\n");
-							System.out.println("\tSoy el nodo "+myNode.getID()+" y tengo el tópico "+((NodePS) myNode).getTopic());
+							System.out.println("\tNodo "+myNode.getID()+" tópico "+((NodePS) myNode).getTopic());
 							System.out.println("\tHe recibido una solicitud de eliminación de registro del nodo "+message.getRemitent());
 			//Si lo tengo registrado lo puedo eliminar
 							if(((NodePS) myNode).getPublisherRegistered().contains(message.getRemitent())){
@@ -111,8 +112,8 @@ public class Layer implements Cloneable, EDProtocol {
 			//Si tengo registrado el nodo como publicador, entonces puedo enviar notificaciones
 							if(((NodePS) myNode).registrado(idRemitent)){
 								//Send message
-								System.out.println("\tSoy el nodo "+myNode.getID()+" y tengo el tópico "+((NodePS) myNode).getTopic());
-								System.out.println("\tHe recibido una publicación del nodo "+message.getRemitent());
+								System.out.println("\tNodo "+myNode.getID()+" tópico "+((NodePS) myNode).getTopic());
+								System.out.println("\tPublicación de Nodo "+message.getRemitent());
 								System.out.println("\tEnviaré notificación a todos los  subscriptores");
 								String content = "Se ha generado un post en el topico "+topicId;
 								ArrayList<TopicMsg> notificaciones = ((NodePS) myNode).Publish( ((NodePS) myNode).getSubscriberSubscribed(), (int) myNode.getID(), topicId,content);
@@ -121,14 +122,14 @@ public class Layer implements Cloneable, EDProtocol {
 								} 
 							}
 							else{
-								System.out.println("\tEl nodo no está registrado en este tópico("+ ((NodePS)myNode).getTopic()+"). Por favor, enviar solicitud ");
+								System.out.println("\tNodo no registrado en("+ ((NodePS)myNode).getTopic()+"). Por favor, enviar solicitud ");
 								//((NodePS) myNode).register(message.getRemitent());
 								if(message.getTtl()> 0) { 
-									System.out.println("\tEl mensaje es difundido"); 
+									//System.out.println("\tMensaje difundido"); 
 			//En caso de que se requiera una simulación más real, con más mensajes y mayor complejidad descomentar esta línea
 									//difundir(myNode,message,0,k); 
 								}
-								else System.out.println("\tEl mensaje ya no tiene ttl");
+								else System.out.println("\tNo ttl");
 							}
 							System.out.println("\n**********************************\n");
 						}
@@ -137,12 +138,12 @@ public class Layer implements Cloneable, EDProtocol {
 			//Si tengo tópico, pero no soy el tópico correspondiente difundo el mensaje un poquito
 						//reenviar el mismo mensaje, pero a uno de mis vecinos de modo random
 						if(message.getTtl()> 0) { System.out.println("\tEl mensaje es difundido"); difundir(myNode,message,0,k); }
-						else System.out.println("\tEl mensaje ya no tiene ttl");
+						else System.out.println("\tNo ttl");
 					}
 				} 
 				else {
 					if(message.getTtl()> 0) { System.out.println("\tEl mensaje es difundido"); difundir(myNode,message,0,k); }
-					else System.out.println("\tEl mensaje ya no tiene ttl");
+					else System.out.println("\tNo ttl");
 				}
 			}
 			//En esta caso me lo mandó un subscriber
@@ -158,7 +159,7 @@ public class Layer implements Cloneable, EDProtocol {
 						if(message.getAccion() == 0){
 							System.out.println("\n**********************************\n");
 							System.out.println("\tSolicitud de subscripción al tópico "+((SubMsg)message).getIdTopic()+" y soy el tópico "+ ((NodePS) myNode).getTopic());						
-							System.out.println("\tSoy el nodo "+myNode.getID()+" y tengo el tópico "+((NodePS) myNode).getTopic());
+							System.out.println("\tNodo "+myNode.getID()+" tópico "+((NodePS) myNode).getTopic());
 							System.out.println("\tHe recibido una solicitud de subscripción del nodo "+message.getRemitent());
 			//Si no lo tengo subscrito lo puedo subscribir
 							if(!((NodePS) myNode).getSubscriberSubscribed().contains(message.getRemitent())){
@@ -177,7 +178,7 @@ public class Layer implements Cloneable, EDProtocol {
 							System.out.println("\tSolicitud de desubcripción del tópico "+((SubMsg)message).getIdTopic()+" y soy el tópico "+ ((NodePS) myNode).getTopic());
 			//Si tengo el tópico solicitado	
 							if(topicId == ((SubMsg) message).getIdTopic()){
-								System.out.println("\tSoy el nodo "+myNode.getID()+" y tengo el tópico "+((NodePS) myNode).getTopic());
+								System.out.println("\tNodo "+myNode.getID()+" tópico "+((NodePS) myNode).getTopic());
 								System.out.println("\tHe recibido una solicitud de desubscripción del nodo "+message.getRemitent());
 			//Si lo tengo subscrito lo puedo eliminar
 								if(((NodePS) myNode).getSubscriberSubscribed().contains(message.getRemitent())){
@@ -195,7 +196,7 @@ public class Layer implements Cloneable, EDProtocol {
 						else if(message.getAccion() == 2){
 							//Se debe manejar el request update	
 							System.out.println("\n**********************************\n");
-							System.out.println("\tSoy el nodo "+myNode.getID()+" y tengo el tópico "+((NodePS) myNode).getTopic());
+							System.out.println("\tNodo "+myNode.getID()+" tópico "+((NodePS) myNode).getTopic());
 			//SI lo tengo subscrito puedo solicitar actualización a los publicistas
 							if(((NodePS) myNode).getSubscriberSubscribed().contains(message.getRemitent())){
 								//Send message
@@ -214,27 +215,26 @@ public class Layer implements Cloneable, EDProtocol {
 							System.out.println("\n**********************************\n");	
 						}
 						if(message.getTtl()> 0) difundir(myNode,message,1,k);
-						else System.out.println("\tEl mensaje ya no tiene ttl");	
+						else System.out.println("\tNo ttl");	
 					}
 					if(message.getTtl()> 0) difundir(myNode,message,1,k);
-					else System.out.println("\tEl mensaje ya no tiene ttl");	
+					else System.out.println("\tNo ttl");	
 				}
 				else{
 					if(message.getTtl()> 0) difundir(myNode,message,1,k);
-					else System.out.println("\tEl mensaje ya no tiene ttl");
+					else System.out.println("\tNo ttl");
 				}
 			}
 			//El mensaje me lo ha enviado un tópico, por tanto puedo comportarme como subscritor o como publicador
 			else if(message.getTipoDeMensaje() == 2){ //me lo envía un tópico
-				System.out.println("\tEl contenido del mensaje es \n\t\t"+message.getContent());
 			//Si tengo tópicos, entonces puedo ver las acciones
 				if( ((NodePS) myNode).getTopicSub().size() > 0 ){
 			//Si la acción es cero entonces me lo manda, como una notificación
 					if(message.getAccion() == 0){
 						if(  ((NodePS) myNode).getTopicSub().contains( ((TopicMsg) message).getIdTopic()) ){
 							System.out.println("\n****************\n");
-							System.out.println("\tSoy el nodo "+myNode.getID());
-							System.out.println("\tHe recibido la siguiente notificación desde el tópico: "+ ((TopicMsg) message).getIdTopic()+"\n\t"+((TopicMsg) message).getContent());
+							System.out.println("\tNodo "+myNode.getID());
+							System.out.println("\tNotificación de tópico: "+ ((TopicMsg) message).getIdTopic()+"\n\t"+((TopicMsg) message).getContent());
 							queHacer(myNode,cantTopic,siguienteAccion);
 							}
 						else{
@@ -245,7 +245,7 @@ public class Layer implements Cloneable, EDProtocol {
 					else if(message.getAccion() == 1){
 						if(  ((NodePS) myNode).getTopicSub().contains( ((TopicMsg) message).getIdTopic()) ){
 							System.out.println("\n****************\n");
-							System.out.println("\tSoy el nodo "+myNode.getID());
+							System.out.println("\tNodo "+myNode.getID());
 							System.out.println("\tHe recibido la siguiente notificación desde el tópico: "+ ((TopicMsg) message).getIdTopic()+"\n\t"+((TopicMsg) message).getContent());
 							((NodePS) myNode).flooding(layerId, ((SubMsg) message).getIdTopic(), 3);
 							System.out.println("\n****************\n");	
@@ -295,11 +295,10 @@ public class Layer implements Cloneable, EDProtocol {
 			} else{
 
 				//System.out.println("********************\n");
-				//System.out.println("\tSoy el nodo "+myNode.getID());
+				//System.out.println("\tNodo "+myNode.getID());
 				//queHacer(myNode,message,cantTopic,siguienteAccion); 
 			}
 		} 
-		getStats();
 	}
 
 	private void getStats() {
@@ -384,30 +383,30 @@ public class Layer implements Cloneable, EDProtocol {
 			NodePS temp = (NodePS) Network.get(i);
 			if(temp.getTopic() != -1){
 				topicAtNet++;
-				System.out.println("- Soy el nodo "+temp.getID()+" y tengo el topico "+temp.getTopic()+".");
+				System.out.println("- NodeID "+temp.getID()+" Topic "+temp.getTopic()+".");
 				ArrayList<Integer> publicadores = ((NodePS) temp).getPublisherRegistered();
 				ArrayList<Integer> publicoEn = ((NodePS) temp).getRegisteredTopic();
 				for(int pub: publicadores){
-					System.out.println("\t- Tengo registrado como publicador a "+pub);
+					System.out.println("\t- Publisher Register "+pub);
 				}
 				ArrayList<Integer> subscriptores = ((NodePS) temp).getSubscriberSubscribed();
 				for(int sub: subscriptores){
-					System.out.println("\t- Tengo subscrito a "+sub);
+					System.out.println("\t- Subscriber "+sub);
 				}
 				for(int topic: temp.getTopicSub()){
-					System.out.println("\t- Estoy subscrito en el topico "+ topic);
+					System.out.println("\t- Subscribed in "+ topic);
 				}
 				for(int top: publicoEn){
-					System.out.println("\t- Puedo publicar en el tópico "+top);
+					System.out.println("\t- Register in "+top);
 				}
 			} else{	
-				System.out.println("- Soy el nodo "+temp.getID()+" y no tengo tópicos.");
+				System.out.println("- NodeID "+temp.getID()+" No topics.");
 				ArrayList<Integer> publicoEn = ((NodePS) temp).getRegisteredTopic();
 				for(int topic: temp.getTopicSub()){
-					System.out.println("\t- Estoy subscrito en el topico "+ topic);
+					System.out.println("\t- Subscribed in "+ topic);
 				}
 				for(int pub: publicoEn){
-					System.out.println("\t- Puedo publicar en "+pub);
+					System.out.println("\t- Register in "+pub);
 				}
 			}
 		}

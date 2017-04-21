@@ -140,37 +140,40 @@ public class Initialization implements Control {
 
 		
 		//Se muestra el contenido de la red según la inicialización de subscriptores, publicadores y tópicos
-		for (int i = 0; i < Networksize; i++) {
+		System.out.println("\t\nRed iniciada \n\n");
+		int topicAtNet = 0;
+		for (int i = 0; i < Network.size(); i++) {
 			NodePS temp = (NodePS) Network.get(i);
 			if(temp.getTopic() != -1){
-				System.out.println("- Soy el nodo "+temp.getID()+" y tengo el topico "+temp.getTopic()+".");
+				topicAtNet++;
+				System.out.println("- NodeID "+temp.getID()+" Topic "+temp.getTopic()+".");
 				ArrayList<Integer> publicadores = ((NodePS) temp).getPublisherRegistered();
+				ArrayList<Integer> publicoEn = ((NodePS) temp).getRegisteredTopic();
 				for(int pub: publicadores){
-					System.out.println("\t- Tengo registrado como publicador a "+pub);
+					System.out.println("\t- Publisher Register "+pub);
 				}
 				ArrayList<Integer> subscriptores = ((NodePS) temp).getSubscriberSubscribed();
 				for(int sub: subscriptores){
-					System.out.println("\t- Tengo subscrito a "+sub);
+					System.out.println("\t- Subscriber "+sub);
 				}
 				for(int topic: temp.getTopicSub()){
-					System.out.println("\t- Estoy subscrito en el topico "+ topic);
+					System.out.println("\t- Subscribed in "+ topic);
 				}
-				ArrayList<Integer> publicoEn = temp.getRegisteredTopic();
 				for(int topic: publicoEn){
-					System.out.println("\t- Publico en "+ topic);
+					System.out.println("\t- Register in "+topic);
 				}
-			} else{
-				System.out.println("- Soy el nodo "+temp.getID()+" y no tengo tópicos.");
+			} else{	
+				System.out.println("- NodeID "+temp.getID()+" No topics.");
+				ArrayList<Integer> publicoEn = ((NodePS) temp).getRegisteredTopic();
 				for(int topic: temp.getTopicSub()){
-					System.out.println("\t- Estoy subscrito en el topico "+ topic);
+					System.out.println("\t- Subscribed in "+ topic);
 				}
-				ArrayList<Integer> publicoEn = temp.getRegisteredTopic();
-				for(int topic: publicoEn){
-					System.out.println("\t- Publico en "+ topic);
+				for(int pub: publicoEn){
+					System.out.println("\t- Register in "+pub);
 				}
 			}
 		}
-		System.out.println("\n");
+		System.out.println("\tLa red tiene "+topicAtNet+" tópicos");
 		return true;
 	}
 

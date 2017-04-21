@@ -1,5 +1,7 @@
 package cl.usach.sd;
 
+import java.util.ArrayList;
+
 import peersim.config.Configuration;
 import peersim.core.CommonState;
 import peersim.core.Control;
@@ -29,15 +31,16 @@ public class Observer implements Control {
 
 		String s = String.format("[time=%d]:[with N=%d nodes] [%d Total send message]", CommonState.getTime(), size,
 				(int) message.getSum());
-		
-		for (int i = 0; i < Network.size(); i++) {			
-			//System.err.println("\tNodeID: "+((NodePS) Network.get(i)).getID()+"\tNode Type: "+ ((NodePS) Network.get(i)).getType()+"\tValue: "+ ((NodePS) Network.get(i)).getValue());
+		int topicAtNet = 0;
+		for (int i = 0; i < Network.size(); i++) {
+			NodePS temp = (NodePS) Network.get(i);
+			if(temp.getTopic() != -1){
+				topicAtNet++;
+				System.err.println("NodeID:"+temp.getID()+" Topic "+temp.getTopic());
+			}
 		}
-		
+		System.err.println("Topics in net "+topicAtNet);		
 		System.err.println(s);
-
 		return false;
 	}
-	
-
 }
